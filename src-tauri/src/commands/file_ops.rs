@@ -118,10 +118,42 @@ pub async fn show_in_folder(path: String) -> Result<(), String> {
 
     #[cfg(target_os = "windows")]
     {
-        std::process::Command::new("explorer")
-            .args(["/select,", &path])
-            .spawn()
-            .map_err(|e| format!("Failed to open Explorer: {}", e))?;
+        use std::ffi::OsStr;
+        use std::os::windows::ffi::OsStrExt;
+
+        let clean_path = path.replace('/', "\\");
+        let p = Path::new(&clean_path);
+
+        let param = if p.is_dir() {
+            format!("\"{}\"", clean_path)
+        } else {
+            format!("/select,\"{}\"", clean_path)
+        };
+
+        let operation: Vec<u16> = OsStr::new("open").encode_wide().chain(std::iter::once(0)).collect();
+        let file: Vec<u16> = OsStr::new("explorer.exe").encode_wide().chain(std::iter::once(0)).collect();
+        let parameters: Vec<u16> = OsStr::new(&param).encode_wide().chain(std::iter::once(0)).collect();
+
+        unsafe {
+            extern "system" {
+                fn ShellExecuteW(
+                    hwnd: *mut std::ffi::c_void,
+                    lpOperation: *const u16,
+                    lpFile: *const u16,
+                    lpParameters: *const u16,
+                    lpDirectory: *const u16,
+                    nShowCmd: i32,
+                ) -> *mut std::ffi::c_void;
+            }
+            ShellExecuteW(
+                std::ptr::null_mut(),
+                operation.as_ptr(),
+                file.as_ptr(),
+                parameters.as_ptr(),
+                std::ptr::null(),
+                1,
+            );
+        }
     }
 
     #[cfg(target_os = "linux")]
