@@ -17,7 +17,16 @@ pub async fn check_dependencies() -> Result<DependencyStatus, String> {
 
 /// Try to run a binary and return its version string
 fn check_binary(name: &str, args: &[&str]) -> Option<String> {
-    match Command::new(name).args(args).output() {
+    let mut cmd = Command::new(name);
+    cmd.args(args);
+
+    #[cfg(target_os = "windows")]
+    {
+        use std::os::windows::process::CommandExt;
+        cmd.creation_flags(0x08000000);
+    }
+
+    match cmd.output() {
         Ok(output) => {
             if output.status.success() {
                 let stdout = String::from_utf8_lossy(&output.stdout);
@@ -64,10 +73,13 @@ pub async fn install_yt_dlp() -> Result<String, String> {
 
     #[cfg(target_os = "windows")]
     {
+        use std::os::windows::process::CommandExt;
+
         // Try winget first
-        let output = Command::new("winget")
-            .args(["install", "yt-dlp.yt-dlp"])
-            .output();
+        let mut winget_cmd = Command::new("winget");
+        winget_cmd.args(["install", "yt-dlp.yt-dlp"]);
+        winget_cmd.creation_flags(0x08000000);
+        let output = winget_cmd.output();
 
         if let Ok(output) = output {
             if output.status.success() {
@@ -76,8 +88,10 @@ pub async fn install_yt_dlp() -> Result<String, String> {
         }
 
         // Fallback to pip
-        let output = Command::new("pip")
-            .args(["install", "yt-dlp"])
+        let mut pip_cmd = Command::new("pip");
+        pip_cmd.args(["install", "yt-dlp"]);
+        pip_cmd.creation_flags(0x08000000);
+        let output = pip_cmd
             .output()
             .map_err(|e| format!("Failed to run pip: {}", e))?;
 
@@ -132,9 +146,11 @@ pub async fn install_ffmpeg() -> Result<String, String> {
 
     #[cfg(target_os = "windows")]
     {
-        let output = Command::new("winget")
-            .args(["install", "Gyan.FFmpeg"])
-            .output();
+        use std::os::windows::process::CommandExt;
+        let mut winget_cmd = Command::new("winget");
+        winget_cmd.args(["install", "Gyan.FFmpeg"]);
+        winget_cmd.creation_flags(0x08000000);
+        let output = winget_cmd.output();
 
         if let Ok(output) = output {
             if output.status.success() {

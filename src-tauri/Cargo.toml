@@ -1,6 +1,6 @@
 [package]
 name = "yt-dlp-gui"
-version = "1.0.2"
+version = "1.0.3"
 description = "A modern cross-platform GUI for yt-dlp"
 authors = ["you"]
 edition = "2021"

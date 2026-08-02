@@ -95,10 +95,17 @@ async fn spawn_download(
     cmd_args.extend(format_args);
     cmd_args.push(url);
 
-    let mut child = Command::new("yt-dlp")
-        .args(&cmd_args)
+    let mut cmd = Command::new("yt-dlp");
+    cmd.args(&cmd_args)
         .stdout(Stdio::piped())
-        .stderr(Stdio::piped())
+        .stderr(Stdio::piped());
+
+    #[cfg(target_os = "windows")]
+    {
+        cmd.creation_flags(0x08000000);
+    }
+
+    let mut child = cmd
         .spawn()
         .map_err(|e| format!("Failed to start yt-dlp: {}", e))?;
 

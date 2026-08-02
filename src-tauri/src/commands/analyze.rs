@@ -12,10 +12,18 @@ pub async fn analyze_url(
     abort_analysis_inner(&state).await;
 
     // Spawn yt-dlp --dump-json
-    let child = Command::new("yt-dlp")
-        .args(["--dump-json", "--no-playlist", &url])
+    let mut cmd = Command::new("yt-dlp");
+    cmd.args(["--dump-json", "--no-playlist", &url])
         .stdout(std::process::Stdio::piped())
-        .stderr(std::process::Stdio::piped())
+        .stderr(std::process::Stdio::piped());
+
+    #[cfg(target_os = "windows")]
+    {
+        use std::os::windows::process::CommandExt;
+        cmd.creation_flags(0x08000000);
+    }
+
+    let child = cmd
         .spawn()
         .map_err(|e| format!("Failed to start yt-dlp: {}", e))?;
 
@@ -179,11 +187,12 @@ async fn abort_analysis_inner(state: &AppState) {
         }
         #[cfg(windows)]
         {
+            use std::os::windows::process::CommandExt;
             use std::process::Command;
-            Command::new("taskkill")
-                .args(["/F", "/PID", &pid.to_string()])
-                .output()
-                .ok();
+            let mut cmd = Command::new("taskkill");
+            cmd.args(["/F", "/PID", &pid.to_string()]);
+            cmd.creation_flags(0x08000000);
+            cmd.output().ok();
         }
     }
 }
