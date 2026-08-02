@@ -1,0 +1,106 @@
+/**
+ * Format bytes into a human-readable string
+ */
+export function formatBytes(bytes: number): string {
+  if (bytes === 0) return "0 B";
+  const k = 1024;
+  const sizes = ["B", "KB", "MB", "GB", "TB"];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + " " + sizes[i];
+}
+
+/**
+ * Format duration in seconds to mm:ss or hh:mm:ss
+ */
+export function formatDuration(seconds: number | null): string {
+  if (seconds === null || seconds === undefined) return "--:--";
+  const h = Math.floor(seconds / 3600);
+  const m = Math.floor((seconds % 3600) / 60);
+  const s = Math.floor(seconds % 60);
+  if (h > 0) {
+    return `${h}:${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+  }
+  return `${m}:${String(s).padStart(2, "0")}`;
+}
+
+/**
+ * Generate a unique ID for downloads
+ */
+export function generateId(): string {
+  return crypto.randomUUID
+    ? crypto.randomUUID()
+    : `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+}
+
+/**
+ * Get the file extension from a path
+ */
+export function getExtension(path: string): string {
+  const parts = path.split(".");
+  return parts.length > 1 ? parts[parts.length - 1] : "";
+}
+
+/**
+ * Get the filename without extension
+ */
+export function getBaseName(path: string): string {
+  const name = path.split(/[/\\]/).pop() || path;
+  const dotIndex = name.lastIndexOf(".");
+  return dotIndex > 0 ? name.substring(0, dotIndex) : name;
+}
+
+/**
+ * Truncate text with ellipsis
+ */
+export function truncate(text: string, maxLength: number): string {
+  if (text.length <= maxLength) return text;
+  return text.substring(0, maxLength - 3) + "...";
+}
+
+/**
+ * Deduplicate resolutions (prefer highest bitrate/quality per resolution)
+ */
+export function deduplicateResolutions(
+  formats: Array<{ height: number | null; fps: number | null; format_id: string; tbr: number | null }>
+): Array<{ height: number; fps: number; label: string }> {
+  const seen = new Map<string, { height: number; fps: number; label: string }>();
+
+  for (const fmt of formats) {
+    if (fmt.height === null) continue;
+    const key = `${fmt.height}p`;
+    if (!seen.has(key)) {
+      seen.set(key, {
+        height: fmt.height,
+        fps: fmt.fps ?? 30,
+        label: key,
+      });
+    }
+  }
+
+  return Array.from(seen.values()).sort((a, b) => b.height - a.height);
+}
+
+/**
+ * Format an ISO date string into a localized short date/time
+ */
+export function formatDate(isoString: string): string {
+  try {
+    const date = new Date(isoString);
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+    if (diffDays === 0) {
+      return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+    }
+    if (diffDays === 1) return "Yesterday";
+    if (diffDays < 7) return `${diffDays} days ago`;
+    return date.toLocaleDateString([], {
+      month: "short",
+      day: "numeric",
+      year: now.getFullYear() !== date.getFullYear() ? "numeric" : undefined,
+    });
+  } catch {
+    return "--";
+  }
+}
