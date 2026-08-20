@@ -38,7 +38,7 @@ interface DownloadStore {
   loadDownloads: () => Promise<void>;
   addDownload: (entry: DownloadEntry) => void;
   removeDownloadsFromList: (ids: string[]) => void;
-  initEventListeners: () => Promise<void>;
+  initEventListeners: () => Promise<() => void>;
 }
 
 export const useDownloadStore = create<DownloadStore>((set, get) => ({
@@ -136,8 +136,9 @@ export const useDownloadStore = create<DownloadStore>((set, get) => ({
 
   // Initialize Tauri event listeners for progress updates
   initEventListeners: async () => {
-    await listen<ProgressEvent>("download-progress", (event) => {
+    const unlisten = await listen<ProgressEvent>("download-progress", (event) => {
       get().updateProgress(event.payload);
     });
+    return unlisten;
   },
 }));

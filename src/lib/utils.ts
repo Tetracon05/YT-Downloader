@@ -29,7 +29,7 @@ export function formatDuration(seconds: number | null): string {
 export function generateId(): string {
   return crypto.randomUUID
     ? crypto.randomUUID()
-    : `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    : `${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
 }
 
 /**
@@ -81,25 +81,32 @@ export function deduplicateResolutions(
 }
 
 /**
- * Format an ISO date string into a localized short date/time
+ * Format an ISO date string into date + time.
+ * Today → "10:35 · Aug 20"
+ * Other → "Aug 20 · 10:35"  (with year if different)
  */
 export function formatDate(isoString: string): string {
   try {
     const date = new Date(isoString);
     const now = new Date();
-    const diffMs = now.getTime() - date.getTime();
-    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+    const isToday =
+      date.getFullYear() === now.getFullYear() &&
+      date.getMonth() === now.getMonth() &&
+      date.getDate() === now.getDate();
 
-    if (diffDays === 0) {
-      return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-    }
-    if (diffDays === 1) return "Yesterday";
-    if (diffDays < 7) return `${diffDays} days ago`;
-    return date.toLocaleDateString([], {
+    const time = date.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+    const datePart = date.toLocaleDateString([], {
       month: "short",
       day: "numeric",
       year: now.getFullYear() !== date.getFullYear() ? "numeric" : undefined,
     });
+
+    // Today: show time first, date second (most relevant part first)
+    if (isToday) return `${time} · ${datePart}`;
+    return `${datePart} · ${time}`;
   } catch {
     return "--";
   }

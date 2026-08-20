@@ -12,6 +12,7 @@ pub fn run() {
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_shell::init())
         .plugin(tauri_plugin_fs::init())
+        .plugin(tauri_plugin_drag::init())
         .setup(|app| {
             // Determine app data directory for persistence
             let data_dir = app
@@ -51,6 +52,7 @@ pub fn run() {
             commands::file_ops::remove_download,
             commands::file_ops::rename_download,
             commands::file_ops::show_in_folder,
+            commands::file_ops::start_drag,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

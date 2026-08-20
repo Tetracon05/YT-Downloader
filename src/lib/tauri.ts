@@ -21,8 +21,8 @@ export async function installFfmpeg(): Promise<string> {
 
 // ===== Analysis Commands =====
 
-export async function analyzeUrl(url: string): Promise<AnalysisResult> {
-  return invoke("analyze_url", { url });
+export async function analyzeUrl(url: string, cookiesFile?: string): Promise<AnalysisResult> {
+  return invoke("analyze_url", { url, cookiesFile: cookiesFile || null });
 }
 
 export async function abortAnalysis(): Promise<void> {
@@ -46,11 +46,8 @@ export async function pauseDownload(id: string): Promise<void> {
   return invoke("pause_download", { id });
 }
 
-export async function resumeDownload(
-  id: string,
-  formatArgs: string[]
-): Promise<void> {
-  return invoke("resume_download", { id, formatArgs });
+export async function resumeDownload(id: string): Promise<void> {
+  return invoke("resume_download", { id });
 }
 
 export async function cancelDownload(id: string): Promise<void> {
@@ -84,4 +81,11 @@ export async function renameDownload(
 
 export async function showInFolder(path: string): Promise<void> {
   return invoke("show_in_folder", { path });
+}
+
+/// Initiates a native OS drag-out for a completed downloaded file.
+/// The backend validates that the file is completed and accessible before
+/// starting the drag — this will throw if validation fails.
+export async function startDrag(id: string): Promise<void> {
+  return invoke("start_drag", { id });
 }

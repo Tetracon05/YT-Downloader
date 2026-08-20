@@ -1,8 +1,8 @@
-use crate::state::AppState;
+use crate::state::{AppState, DownloadStatus};
 use crate::store;
 use std::fs;
 use std::path::Path;
-use tauri::State;
+use tauri::{Manager, State};
 
 /// Delete a download entry AND its file from disk
 #[tauri::command]
@@ -170,4 +170,89 @@ pub async fn show_in_folder(path: String) -> Result<(), String> {
     }
 
     Ok(())
+}
+
+/// Initiate a native OS drag of a downloaded file out of the application window.
+///
+/// Safety checks performed before starting the drag:
+///   1. The download entry exists and its status is "completed"
+///   2. The file path is non-empty and the file exists on disk
+///   3. The file is readable (not exclusively locked by another process)
+///
+/// The drag is dispatched to the main OS thread via `run_on_main_thread`, so the
+/// async Tauri command does not block the UI while waiting.
+#[tauri::command]
+pub async fn start_drag(
+    state: State<'_, AppState>,
+    window: tauri::WebviewWindow,
+    id: String,
+) -> Result<(), String> {
+    // --- 1. Validate download state ---
+    let downloads = state.downloads.lock().await;
+    let dl = downloads
+        .iter()
+        .find(|d| d.id == id)
+        .ok_or("Download not found")?;
+
+    if dl.status != DownloadStatus::Completed {
+        return Err(format!(
+            "Cannot drag '{}': download is not completed (status: {:?})",
+            dl.title, dl.status
+        ));
+    }
+
+    if dl.file_path.is_empty() {
+        return Err("Cannot drag: file path is not set".to_string());
+    }
+
+    // --- 2. Validate file existence ---
+    let path = Path::new(&dl.file_path);
+    if !path.exists() {
+        return Err(format!(
+            "Cannot drag: file no longer exists on disk at '{}'",
+            dl.file_path
+        ));
+    }
+
+    // --- 3. Check file is readable (not exclusively locked) ---
+    fs::File::open(path)
+        .map_err(|e| format!("Cannot drag: file is locked or not accessible: {}", e))?;
+
+    // Canonicalize for an absolute path the OS drag API requires
+    let canonical = std::fs::canonicalize(&dl.file_path)
+        .unwrap_or_else(|_| std::path::PathBuf::from(&dl.file_path));
+
+    // Release the state lock before dispatching to the main thread
+    drop(downloads);
+
+    // --- 4. Dispatch native OS drag to the main thread ---
+    // drag::start_drag must run on the OS main thread (Win32 / Cocoa requirement).
+    // We use a channel to propagate any error back to this async context.
+    let (tx, rx) = std::sync::mpsc::channel::<Result<(), String>>();
+
+    let app = window.app_handle().clone();
+    app.run_on_main_thread(move || {
+        let item = drag::DragItem::Files(vec![canonical]);
+        // 32x32 white PNG bytes as a minimal drag icon
+        let icon = drag::Image::Raw(vec![]);
+
+        let result = drag::start_drag(
+            &window,
+            item,
+            icon,
+            |_result, _cursor_pos| { /* drag ended — no-op */ },
+            drag::Options {
+                mode: drag::DragMode::Copy,
+                skip_animatation_on_cancel_or_failure: false,
+            },
+        )
+        .map_err(|e| format!("Failed to start native drag: {}", e));
+
+        let _ = tx.send(result);
+    })
+    .map_err(|e| format!("Failed to dispatch drag to main thread: {}", e))?;
+
+    // Wait for the drag to complete (or fail)
+    rx.recv()
+        .map_err(|_| "Drag channel closed unexpectedly".to_string())?
 }

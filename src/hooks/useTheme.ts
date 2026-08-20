@@ -58,5 +58,11 @@ export function useTheme() {
     });
   }, [isDark]);
 
-  return { isDark, mode, toggleTheme };
+  return { isDark, mode, setMode: (m: ThemeMode) => {
+    setMode(m);
+    localStorage.setItem("theme-mode", m);
+    if (m === "light") setIsDark(false);
+    else if (m === "dark") setIsDark(true);
+    else setIsDark(getSystemDark());
+  }, toggleTheme };
 }

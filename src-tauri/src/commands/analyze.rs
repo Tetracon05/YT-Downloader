@@ -1,25 +1,46 @@
 use crate::state::{AnalysisResult, AppState, VideoFormat};
-use std::process::Command;
+use tokio::process::Command;
 use tauri::State;
 
-/// Analyze a URL by running yt-dlp --dump-json and parsing the output
+/// Analyze a URL by running yt-dlp --dump-json and parsing the output.
+/// yt-dlp's default client selection (android_vr) is used without cookies —
+/// this gives only up to 360p. With a cookies.txt file from a signed-in browser,
+/// yt-dlp can access high-quality formats (1080p+).
 #[tauri::command]
 pub async fn analyze_url(
     url: String,
+    cookies_file: Option<String>,
     state: State<'_, AppState>,
 ) -> Result<AnalysisResult, String> {
     // Kill any existing analysis process
     abort_analysis_inner(&state).await;
 
-    // Spawn yt-dlp --dump-json
+    // Build yt-dlp args — let yt-dlp choose the best client automatically.
+    // Do NOT hardcode player_client: YouTube rotates restrictions frequently
+    // and yt-dlp's default is always the most up-to-date choice.
+    let mut args: Vec<String> = vec![
+        "--dump-json".into(),
+        "--no-playlist".into(),
+    ];
+
+    // Provide cookies.txt if the user has set one — this is the only reliable
+    // way to unlock high-resolution formats on YouTube in 2025+.
+    if let Some(ref path) = cookies_file {
+        if !path.is_empty() {
+            args.push("--cookies".into());
+            args.push(path.clone());
+        }
+    }
+
+    args.push(url.clone());
+
     let mut cmd = Command::new("yt-dlp");
-    cmd.args(["--dump-json", "--no-playlist", &url])
+    cmd.args(&args)
         .stdout(std::process::Stdio::piped())
         .stderr(std::process::Stdio::piped());
 
     #[cfg(target_os = "windows")]
     {
-        use std::os::windows::process::CommandExt;
         cmd.creation_flags(0x08000000);
     }
 
@@ -30,11 +51,12 @@ pub async fn analyze_url(
     // Store the PID so it can be aborted
     {
         let mut analyze_pid = state.analyze_process.lock().await;
-        *analyze_pid = Some(child.id());
+        *analyze_pid = Some(child.id().unwrap_or(0));
     }
 
     let output = child
         .wait_with_output()
+        .await
         .map_err(|e| format!("yt-dlp process error: {}", e))?;
 
     // Clear the stored PID

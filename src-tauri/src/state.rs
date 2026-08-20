@@ -40,6 +40,10 @@ pub struct DownloadEntry {
     pub file_size: Option<u64>,
     pub error: Option<String>,
     pub created_at: String,
+    /// The yt-dlp format arguments used when this download was started.
+    /// Stored so that resume can replay the exact same format selection.
+    #[serde(default)]
+    pub format_args: Vec<String>,
 }
 
 /// Progress event emitted to the frontend during downloads

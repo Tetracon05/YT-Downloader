@@ -41,7 +41,7 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
 
   const handleResume = async () => {
     onClose();
-    await api.resumeDownload(downloadId, []);
+    await api.resumeDownload(downloadId);
   };
 
   const handleDelete = () => {

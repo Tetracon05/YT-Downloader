@@ -28,3 +28,10 @@ src-tauri/gen/
 *.njsproj
 *.sln
 *.sw?
+
+# Temporary test downloads
+*.part
+*.ytdl
+test_*
+scratch_*
+

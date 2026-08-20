@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React from "react";
 import { useDownloadStore } from "../store/useDownloadStore";
 import {
   IconPlus,
@@ -8,18 +8,17 @@ import {
   IconEdit,
   IconX,
   IconTrash,
-  IconSun,
-  IconMoon,
   IconCheckSquare,
 } from "./Icons";
 import * as api from "../lib/tauri";
+import { useLanguage } from "../hooks/useLanguage";
 
 interface TopBarProps {
-  isDark: boolean;
-  onToggleTheme: () => void;
+  onOpenSettings: () => void;
 }
 
-export const TopBar: React.FC<TopBarProps> = ({ isDark, onToggleTheme }) => {
+export const TopBar: React.FC<TopBarProps> = ({ onOpenSettings }) => {
+  const { t } = useLanguage();
   const {
     downloads,
     selectedIds,
@@ -51,7 +50,7 @@ export const TopBar: React.FC<TopBarProps> = ({ isDark, onToggleTheme }) => {
 
   const handleResume = async () => {
     if (!singleSelected) return;
-    await api.resumeDownload(singleSelected.id, []);
+    await api.resumeDownload(singleSelected.id);
   };
 
   const handleDelete = () => {
@@ -61,11 +60,8 @@ export const TopBar: React.FC<TopBarProps> = ({ isDark, onToggleTheme }) => {
 
   const handleRemove = async () => {
     for (const id of selectedArray) {
-      try {
-        await api.removeDownload(id);
-      } catch (err) {
-        console.error("Failed to remove:", id, err);
-      }
+      try { await api.removeDownload(id); }
+      catch (err) { console.error("Failed to remove:", id, err); }
     }
     removeDownloadsFromList(selectedArray);
   };
@@ -82,102 +78,81 @@ export const TopBar: React.FC<TopBarProps> = ({ isDark, onToggleTheme }) => {
         onClick={() => setAddPanelOpen(true)}
       >
         <IconPlus size={16} />
-        Add Download
+        {t("topBar_addDownload")}
       </button>
 
       <div className="top-bar-divider" />
 
       <div className="top-bar-actions">
-        {/* Multi-select toggle */}
         <button
           className={`btn btn-action ${isMultiSelectMode ? "btn-active" : ""}`}
           onClick={toggleMultiSelectMode}
-          title={isMultiSelectMode ? "Exit Multi-Select" : "Multi-Select"}
+          title={isMultiSelectMode ? t("topBar_exitSelect") : t("topBar_select")}
         >
           <IconCheckSquare size={15} />
-          <span className="btn-label">Select</span>
+          <span className="btn-label">{t("topBar_select")}</span>
         </button>
 
-        {/* Single-item actions */}
         {singleSelected && isActive && (
-          <button
-            className="btn btn-action"
-            onClick={handlePause}
-            title="Pause Download"
-          >
+          <button className="btn btn-action" onClick={handlePause} title={t("topBar_pause")}>
             <IconPause size={15} />
-            <span className="btn-label">Pause</span>
+            <span className="btn-label">{t("topBar_pause")}</span>
           </button>
         )}
 
         {singleSelected && isPaused && (
-          <button
-            className="btn btn-action"
-            onClick={handleResume}
-            title="Resume Download"
-          >
+          <button className="btn btn-action" onClick={handleResume} title={t("topBar_resume")}>
             <IconPlay size={15} />
-            <span className="btn-label">Resume</span>
+            <span className="btn-label">{t("topBar_resume")}</span>
           </button>
         )}
 
         {singleSelected && isCompleted && (
           <>
-            <button
-              className="btn btn-action"
-              onClick={handleShowInFolder}
-              title="Show in Folder"
-            >
+            <button className="btn btn-action" onClick={handleShowInFolder} title={t("topBar_show")}>
               <IconFolderOpen size={15} />
-              <span className="btn-label">Show</span>
+              <span className="btn-label">{t("topBar_show")}</span>
             </button>
             <button
               className="btn btn-action"
               onClick={() => setRenameDialogId(singleSelected.id)}
-              title="Rename File"
+              title={t("topBar_rename")}
             >
               <IconEdit size={15} />
-              <span className="btn-label">Rename</span>
+              <span className="btn-label">{t("topBar_rename")}</span>
             </button>
           </>
         )}
 
-        {/* Multi-item actions */}
         {hasSelection && (
           <>
-            <button
-              className="btn btn-action"
-              onClick={handleRemove}
-              title="Remove from List"
-            >
+            <button className="btn btn-action" onClick={handleRemove} title={t("topBar_remove")}>
               <IconX size={15} />
-              <span className="btn-label">Remove</span>
+              <span className="btn-label">{t("topBar_remove")}</span>
             </button>
-
-            <button
-              className="btn btn-action btn-danger"
-              onClick={handleDelete}
-              title="Delete File(s)"
-            >
+            <button className="btn btn-action btn-danger" onClick={handleDelete} title={t("topBar_delete")}>
               <IconTrash size={15} />
               <span className="btn-label">
-                Delete{selectedArray.length > 1 ? ` (${selectedArray.length})` : ""}
+                {t("topBar_delete")}{selectedArray.length > 1 ? ` (${selectedArray.length})` : ""}
               </span>
             </button>
           </>
         )}
       </div>
 
-      {/* Spacer */}
       <div style={{ flex: 1 }} />
 
-      {/* Theme toggle */}
+      {/* Settings button */}
       <button
-        className="btn btn-action btn-theme-toggle"
-        onClick={onToggleTheme}
-        title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
+        className="btn btn-action btn-settings"
+        onClick={onOpenSettings}
+        title={t("topBar_settings")}
       >
-        {isDark ? <IconSun size={16} /> : <IconMoon size={16} />}
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+        </svg>
+        <span className="btn-label">{t("topBar_settings")}</span>
       </button>
     </div>
   );

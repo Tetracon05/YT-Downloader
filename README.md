@@ -5,14 +5,44 @@ A modern, cross-platform desktop application for downloading videos and audio us
 ## Features
 
 - 🎬 Download video and audio from YouTube and 1000+ supported sites
+- 🍪 **YouTube Authentication (cookies.txt)**: Bypass YouTube 360p / 403 restrictions and unlock all HD/4K resolutions
+- 🌐 **Multi-Language Support**: 10 languages (English, Türkçe, Español, Français, Deutsch, Português, العربية, 日本語, 한국어, 中文)
+- ⚙️ **Settings Drawer**: Easy management of cookies, appearance themes, and language
 - 📊 Real-time progress tracking with speed display
-- 🎨 Automatic light/dark theme following OS preference
+- 🎨 Theme options: System (automatic OS follow), Light, and Dark modes
 - ⏸ Pause and resume downloads
 - 📁 Show downloaded files in system file manager
 - ✏️ Rename downloaded files
 - 🔄 Up to 3 concurrent downloads with automatic queuing
 - 💾 Download history persists across app restarts
 - ⚙️ First-run dependency check with one-click install
+- 🖱️ Native app experience without unwanted browser context menus
+
+---
+
+## 🍪 YouTube High-Quality Downloads (cookies.txt Guide)
+
+### Why is this needed? / Neden gerekli?
+> **English:** Due to YouTube's recent anti-bot protections (SABR streaming and Proof of Origin / PO Tokens), YouTube restricts unauthenticated requests to a maximum resolution of **360p** or throws `HTTP 403 Forbidden` errors. Providing a `cookies.txt` file from your web browser authenticates yt-dlp as a real user, unlocking **720p, 1080p, 1440p, 4K, and 8K** resolutions.
+>
+> **Türkçe:** YouTube'un yeni bot koruma mekanizmaları (SABR akışı ve PO Token zorunluluğu) nedeniyle oturum açılmamış isteklerde kalite maksimum **360p** ile sınırlandırılmakta veya `403 Forbidden` hatası alınmaktadır. Tarayıcınızdan alacağınız bir `cookies.txt` dosyası sayesinde uygulama tüm **720p, 1080p, 2K, 4K** formatlarını sorunsuz şekilde indirebilir.
+
+### How to get your `cookies.txt`? / `cookies.txt` Nasıl Alınır?
+
+1. **Install a Browser Extension / Tarayıcı Eklentisi Yükleyin:**
+   - **Chrome / Edge / Brave / Opera:** [Get cookies.txt locally (Chrome Web Store)](https://chromewebstore.google.com/detail/get-cookiestxt-locally/cclelndahbckbenkjhflpdbgdldlbecc)
+   - **Firefox:** [cookies.txt (Firefox Add-ons)](https://addons.mozilla.org/firefox/addon/cookies-txt/)
+2. **Log in to YouTube / YouTube'a Giriş Yapın:**
+   - Open your browser, navigate to [youtube.com](https://www.youtube.com) and ensure you are logged into your account.
+3. **Export the Cookies / Çerezleri Dışa Aktarın:**
+   - While on YouTube, click the extension icon and select **Export** / **Download**.
+   - Save the file as `cookies.txt` on your computer.
+4. **Select in YT Downloader / Uygulamada Tanıtın:**
+   - Open YT Downloader and click **Settings (⚙️)** or use the banner inside the **Add Download** modal.
+   - Click **"Select cookies.txt"** and choose your saved file.
+   - *The file path is saved automatically, you only need to do this once!*
+
+---
 
 ## Prerequisites
 

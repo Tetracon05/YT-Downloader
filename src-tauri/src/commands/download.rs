@@ -35,6 +35,7 @@ pub async fn start_download(
         file_size: None,
         error: None,
         created_at: chrono::Utc::now().to_rfc3339(),
+        format_args: format_args.clone(),
     };
 
     // Add to downloads list
@@ -87,6 +88,15 @@ async fn spawn_download(
     let mut cmd_args = vec![
         "--newline".to_string(),
         "--no-playlist".to_string(),
+        "--force-overwrites".to_string(),
+        // Let yt-dlp pick the best client automatically — do NOT hardcode
+        // player_client as YouTube frequently rotates client restrictions.
+        // Cookies (--cookies path/to/cookies.txt) are passed via format_args
+        // from the frontend if the user has configured a cookies file.
+        //
+        // --windows-filenames: sanitise output filename for Windows
+        // (prevents [Errno 22] Invalid argument on paths with special chars)
+        "--windows-filenames".to_string(),
         "--progress-template".to_string(),
         "download:%(progress._percent_str)s|||%(progress._speed_str)s|||%(progress._eta_str)s".to_string(),
         "-o".to_string(),
@@ -308,10 +318,15 @@ pub async fn pause_download(
         processes.remove(&id);
     }
 
+    let current_progress = {
+        let downloads = state.downloads.lock().await;
+        downloads.iter().find(|d| d.id == id).map(|d| d.progress).unwrap_or(0.0)
+    };
+
     app.emit("download-progress", ProgressEvent {
         id,
         status: DownloadStatus::Paused,
-        progress: 0.0,
+        progress: current_progress,
         speed: String::new(),
         error: None,
     }).ok();
@@ -319,21 +334,20 @@ pub async fn pause_download(
     Ok(())
 }
 
-/// Resume a paused download (restarts yt-dlp with --continue)
+/// Resume a paused download (restarts yt-dlp with --continue, using stored format args)
 #[tauri::command]
 pub async fn resume_download(
     app: AppHandle,
     state: State<'_, AppState>,
     id: String,
-    format_args: Vec<String>,
 ) -> Result<(), String> {
-    let (url, output_path) = {
+    let (url, output_path, stored_format_args) = {
         let downloads = state.downloads.lock().await;
         let dl = downloads
             .iter()
             .find(|d| d.id == id)
             .ok_or("Download not found")?;
-        (dl.url.clone(), dl.file_path.clone())
+        (dl.url.clone(), dl.file_path.clone(), dl.format_args.clone())
     };
 
     // Update status
@@ -346,8 +360,14 @@ pub async fn resume_download(
         store::save_downloads(&data_dir, &downloads);
     }
 
+    // Use stored format args; fall back to best quality if none stored
+    let mut args = if stored_format_args.is_empty() {
+        vec!["-f".to_string(), "bestvideo+bestaudio/best".to_string()]
+    } else {
+        stored_format_args
+    };
+
     // Add --continue flag to resume
-    let mut args = format_args;
     if !args.contains(&"--continue".to_string()) {
         args.push("--continue".to_string());
     }
@@ -385,7 +405,7 @@ pub async fn cancel_download(
     app.emit("download-progress", ProgressEvent {
         id,
         status: DownloadStatus::Cancelled,
-        progress: 0.0,
+        progress: 0.0,  // Reset to 0 on cancel (intentional)
         speed: String::new(),
         error: None,
     }).ok();

@@ -29,6 +29,8 @@
       document.addEventListener("DOMContentLoaded", () => {
         document.body.classList.add("loaded");
       });
+      // Disable right-click context menu (prevents Edge WebView menu in Tauri)
+      document.addEventListener("contextmenu", (e) => e.preventDefault());
     </script>
   </body>
 </html>

@@ -1,9 +1,12 @@
-import React, { useState, useEffect } from "react";
+﻿import React, { useState, useEffect } from "react";
 import { useDownloadStore } from "../store/useDownloadStore";
 import * as api from "../lib/tauri";
 import type { DependencyStatus } from "../types";
+import { useLanguage } from "../hooks/useLanguage";
+
 export const DependencyCheck: React.FC = () => {
   const { setDependencyStatus, setDependencyChecked } = useDownloadStore();
+  const { t } = useLanguage();
   const [status, setStatus] = useState<DependencyStatus | null>(null);
   const [checking, setChecking] = useState(true);
   const [installingYtDlp, setInstallingYtDlp] = useState(false);
@@ -19,8 +22,6 @@ export const DependencyCheck: React.FC = () => {
       const result = await api.checkDependencies();
       setStatus(result);
       setDependencyStatus(result);
-
-      // If both installed, proceed automatically
       if (result.yt_dlp_installed && result.ffmpeg_installed) {
         setDependencyChecked(true);
       }
@@ -31,55 +32,39 @@ export const DependencyCheck: React.FC = () => {
     }
   };
 
-  useEffect(() => {
-    checkDeps();
-  }, []);
+  useEffect(() => { checkDeps(); }, []);
 
   const handleInstallYtDlp = async () => {
     setInstallingYtDlp(true);
-    setYtDlpError(null);
-    setYtDlpMessage(null);
+    setYtDlpError(null); setYtDlpMessage(null);
     try {
       const msg = await api.installYtDlp();
       setYtDlpMessage(msg);
-      // Re-check dependencies
       await checkDeps();
-    } catch (err) {
-      setYtDlpError(String(err));
-    } finally {
-      setInstallingYtDlp(false);
-    }
+    } catch (err) { setYtDlpError(String(err)); }
+    finally { setInstallingYtDlp(false); }
   };
 
   const handleInstallFfmpeg = async () => {
     setInstallingFfmpeg(true);
-    setFfmpegError(null);
-    setFfmpegMessage(null);
+    setFfmpegError(null); setFfmpegMessage(null);
     try {
       const msg = await api.installFfmpeg();
       setFfmpegMessage(msg);
-      // Re-check dependencies
       await checkDeps();
-    } catch (err) {
-      setFfmpegError(String(err));
-    } finally {
-      setInstallingFfmpeg(false);
-    }
+    } catch (err) { setFfmpegError(String(err)); }
+    finally { setInstallingFfmpeg(false); }
   };
 
-  const handleContinue = () => {
-    setDependencyChecked(true);
-  };
+  const handleContinue = () => setDependencyChecked(true);
 
   if (checking) {
     return (
       <div className="dependency-screen">
         <div className="dependency-card">
           <div className="spinner spinner-large" />
-          <h2 className="dependency-title">Checking dependencies...</h2>
-          <p className="dependency-subtitle">
-            Looking for yt-dlp and ffmpeg on your system
-          </p>
+          <h2 className="dependency-title">{t("dep_checking")}</h2>
+          <p className="dependency-subtitle">{t("dep_checkingSubtitle")}</p>
         </div>
       </div>
     );
@@ -94,82 +79,44 @@ export const DependencyCheck: React.FC = () => {
       <div className="dependency-card">
         <div className="dependency-icon">⚙️</div>
         <h2 className="dependency-title">
-          {allInstalled ? "All Ready!" : "Setup Required"}
+          {allInstalled ? t("dep_allReady") : t("dep_setupRequired")}
         </h2>
         <p className="dependency-subtitle">
-          {allInstalled
-            ? "All dependencies are installed and ready to use."
-            : "YT Downloader requires the following tools to be installed:"}
+          {allInstalled ? t("dep_allReadyDesc") : t("dep_setupDesc")}
         </p>
 
         <div className="dependency-list">
           {/* yt-dlp */}
-          <div
-            className={`dependency-item ${
-              status.yt_dlp_installed ? "installed" : "missing"
-            }`}
-          >
+          <div className={`dependency-item ${status.yt_dlp_installed ? "installed" : "missing"}`}>
             <div className="dependency-item-header">
               <div className="dependency-item-info">
-                <span
-                  className={`status-dot ${
-                    status.yt_dlp_installed ? "green" : "red"
-                  }`}
-                />
+                <span className={`status-dot ${status.yt_dlp_installed ? "green" : "red"}`} />
                 <div>
                   <span className="dependency-name">yt-dlp</span>
                   {status.yt_dlp_version && (
-                    <span className="dependency-version">
-                      v{status.yt_dlp_version}
-                    </span>
+                    <span className="dependency-version">v{status.yt_dlp_version}</span>
                   )}
                 </div>
               </div>
               {!status.yt_dlp_installed && (
-                <button
-                  className="btn btn-install"
-                  onClick={handleInstallYtDlp}
-                  disabled={installingYtDlp}
-                >
-                  {installingYtDlp ? (
-                    <>
-                      <div className="spinner spinner-small" /> Installing...
-                    </>
-                  ) : (
-                    "Install"
-                  )}
+                <button className="btn btn-install" onClick={handleInstallYtDlp} disabled={installingYtDlp}>
+                  {installingYtDlp ? <><div className="spinner spinner-small" /> {t("dep_installing")}</> : t("dep_install")}
                 </button>
               )}
-              {status.yt_dlp_installed && (
-                <span className="installed-badge">✓ Installed</span>
-              )}
+              {status.yt_dlp_installed && <span className="installed-badge">{t("dep_installed")}</span>}
             </div>
-            {ytDlpMessage && (
-              <p className="dependency-message success">{ytDlpMessage}</p>
-            )}
-            {ytDlpError && (
-              <p className="dependency-message error">{ytDlpError}</p>
-            )}
+            {ytDlpMessage && <p className="dependency-message success">{ytDlpMessage}</p>}
+            {ytDlpError && <p className="dependency-message error">{ytDlpError}</p>}
             {!status.yt_dlp_installed && !installingYtDlp && !ytDlpError && (
-              <p className="dependency-hint">
-                Downloads videos and audio from YouTube and other sites
-              </p>
+              <p className="dependency-hint">{t("dep_ytdlpHint")}</p>
             )}
           </div>
 
           {/* ffmpeg */}
-          <div
-            className={`dependency-item ${
-              status.ffmpeg_installed ? "installed" : "missing"
-            }`}
-          >
+          <div className={`dependency-item ${status.ffmpeg_installed ? "installed" : "missing"}`}>
             <div className="dependency-item-header">
               <div className="dependency-item-info">
-                <span
-                  className={`status-dot ${
-                    status.ffmpeg_installed ? "green" : "red"
-                  }`}
-                />
+                <span className={`status-dot ${status.ffmpeg_installed ? "green" : "red"}`} />
                 <div>
                   <span className="dependency-name">ffmpeg</span>
                   {status.ffmpeg_version && (
@@ -180,48 +127,26 @@ export const DependencyCheck: React.FC = () => {
                 </div>
               </div>
               {!status.ffmpeg_installed && (
-                <button
-                  className="btn btn-install"
-                  onClick={handleInstallFfmpeg}
-                  disabled={installingFfmpeg}
-                >
-                  {installingFfmpeg ? (
-                    <>
-                      <div className="spinner spinner-small" /> Installing...
-                    </>
-                  ) : (
-                    "Install"
-                  )}
+                <button className="btn btn-install" onClick={handleInstallFfmpeg} disabled={installingFfmpeg}>
+                  {installingFfmpeg ? <><div className="spinner spinner-small" /> {t("dep_installing")}</> : t("dep_install")}
                 </button>
               )}
-              {status.ffmpeg_installed && (
-                <span className="installed-badge">✓ Installed</span>
-              )}
+              {status.ffmpeg_installed && <span className="installed-badge">{t("dep_installed")}</span>}
             </div>
-            {ffmpegMessage && (
-              <p className="dependency-message success">{ffmpegMessage}</p>
-            )}
-            {ffmpegError && (
-              <p className="dependency-message error">{ffmpegError}</p>
-            )}
+            {ffmpegMessage && <p className="dependency-message success">{ffmpegMessage}</p>}
+            {ffmpegError && <p className="dependency-message error">{ffmpegError}</p>}
             {!status.ffmpeg_installed && !installingFfmpeg && !ffmpegError && (
-              <p className="dependency-hint">
-                Required for merging video and audio streams
-              </p>
+              <p className="dependency-hint">{t("dep_ffmpegHint")}</p>
             )}
           </div>
         </div>
 
         <div className="dependency-actions">
-          <button
-            className="btn btn-primary btn-continue"
-            onClick={handleContinue}
-            disabled={!allInstalled}
-          >
-            Continue
+          <button className="btn btn-primary btn-continue" onClick={handleContinue} disabled={!allInstalled}>
+            {t("dep_continue")}
           </button>
           <button className="btn btn-secondary" onClick={checkDeps}>
-            Re-check
+            {t("dep_recheck")}
           </button>
         </div>
       </div>

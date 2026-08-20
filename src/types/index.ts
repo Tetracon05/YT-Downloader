@@ -24,6 +24,7 @@ export interface DownloadEntry {
   file_size: number | null;
   error: string | null;
   created_at: string;
+  format_args: string[];
 }
 
 export interface ProgressEvent {
