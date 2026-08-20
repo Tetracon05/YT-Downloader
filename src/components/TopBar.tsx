@@ -1,9 +1,7 @@
-﻿import React from "react";
+import React from "react";
 import { useDownloadStore } from "../store/useDownloadStore";
 import {
   IconPlus,
-  IconPause,
-  IconPlay,
   IconFolderOpen,
   IconEdit,
   IconX,
@@ -37,21 +35,7 @@ export const TopBar: React.FC<TopBarProps> = ({ onOpenSettings }) => {
       : null;
   const hasSelection = selectedArray.length > 0;
 
-  const isActive =
-    singleSelected?.status === "downloading" ||
-    singleSelected?.status === "processing";
-  const isPaused = singleSelected?.status === "paused";
   const isCompleted = singleSelected?.status === "completed";
-
-  const handlePause = async () => {
-    if (!singleSelected) return;
-    await api.pauseDownload(singleSelected.id);
-  };
-
-  const handleResume = async () => {
-    if (!singleSelected) return;
-    await api.resumeDownload(singleSelected.id);
-  };
 
   const handleDelete = () => {
     if (!hasSelection) return;
@@ -92,20 +76,6 @@ export const TopBar: React.FC<TopBarProps> = ({ onOpenSettings }) => {
           <IconCheckSquare size={15} />
           <span className="btn-label">{t("topBar_select")}</span>
         </button>
-
-        {singleSelected && isActive && (
-          <button className="btn btn-action" onClick={handlePause} title={t("topBar_pause")}>
-            <IconPause size={15} />
-            <span className="btn-label">{t("topBar_pause")}</span>
-          </button>
-        )}
-
-        {singleSelected && isPaused && (
-          <button className="btn btn-action" onClick={handleResume} title={t("topBar_resume")}>
-            <IconPlay size={15} />
-            <span className="btn-label">{t("topBar_resume")}</span>
-          </button>
-        )}
 
         {singleSelected && isCompleted && (
           <>

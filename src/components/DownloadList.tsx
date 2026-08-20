@@ -4,12 +4,14 @@ import { DownloadRow } from "./DownloadRow";
 import { useContextMenu } from "../hooks/useContextMenu";
 import { ContextMenu } from "./ContextMenu";
 import { IconDownload } from "./Icons";
+import { useLanguage } from "../hooks/useLanguage";
 
 export const DownloadList: React.FC = () => {
   const { downloads, selectedIds, selectId, isMultiSelectMode } =
     useDownloadStore();
   const { contextMenu, handleContextMenu, closeContextMenu } =
     useContextMenu();
+  const { t } = useLanguage();
 
   const handleSelect = (id: string, e: React.MouseEvent) => {
     const multiKey = e.metaKey || e.ctrlKey || isMultiSelectMode;
@@ -23,9 +25,9 @@ export const DownloadList: React.FC = () => {
           <div className="empty-icon">
             <IconDownload size={48} />
           </div>
-          <h3 className="empty-title">No downloads yet</h3>
+          <h3 className="empty-title">{t("empty_title")}</h3>
           <p className="empty-description">
-            Click <strong>"Add Download"</strong> to get started
+            {t("empty_desc")}
           </p>
         </div>
       ) : (
@@ -34,11 +36,11 @@ export const DownloadList: React.FC = () => {
             <thead>
               <tr>
                 {isMultiSelectMode && <th className="th-check" />}
-                <th className="th-name">Name</th>
-                <th className="th-kind">Kind</th>
-                <th className="th-size">Size</th>
-                <th className="th-date">Date</th>
-                <th className="th-progress">Progress</th>
+                <th className="th-name">{t("col_name")}</th>
+                <th className="th-kind">{t("col_kind")}</th>
+                <th className="th-size">{t("col_size")}</th>
+                <th className="th-date">{t("col_date")}</th>
+                <th className="th-progress">{t("col_progress")}</th>
               </tr>
             </thead>
             <tbody>

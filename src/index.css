@@ -460,9 +460,6 @@ body {
   color: var(--color-error);
 }
 
-.paused-label {
-  color: var(--color-warning);
-}
 
 .pending-label {
   color: var(--text-tertiary);
@@ -1590,3 +1587,138 @@ body {
 .lang-card__flag { font-size: 26px; line-height: 1; }
 .lang-card__name { font-size: 12.5px; font-weight: 600; color: var(--text-primary); text-align: center; }
 .lang-card__name-en { font-size: 10.5px; color: var(--text-tertiary); text-align: center; }
+
+/* ─── Update Dialog ────────────────────────────────────────────────────────── */
+.update-dialog-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.2s ease;
+}
+
+.update-dialog {
+  background: var(--surface-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-xl, 16px);
+  padding: 32px;
+  width: 420px;
+  max-width: calc(100vw - 40px);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.4);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  text-align: center;
+  animation: slideUp 0.25s ease;
+}
+
+.update-dialog__icon {
+  font-size: 40px;
+  line-height: 1;
+  animation: pulse 2s infinite;
+}
+
+.update-dialog__title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.update-dialog__desc {
+  font-size: 13.5px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.update-version-box {
+  width: 100%;
+  background: var(--surface-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.update-version-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.update-version-label {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  font-weight: 500;
+}
+
+.update-version-value {
+  font-size: 13px;
+  font-weight: 600;
+  font-family: monospace;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.update-version-value--old {
+  color: var(--text-tertiary);
+  background: var(--surface-hover);
+  text-decoration: line-through;
+}
+
+.update-version-value--new {
+  color: #22c55e;
+  background: rgba(34, 197, 94, 0.12);
+}
+
+.update-version-arrow {
+  font-size: 14px;
+  color: var(--text-tertiary);
+  text-align: center;
+}
+
+.update-result {
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.update-result--success {
+  background: rgba(34, 197, 94, 0.12);
+  color: #22c55e;
+  border: 1px solid rgba(34, 197, 94, 0.25);
+}
+
+.update-result--error {
+  background: rgba(239, 68, 68, 0.1);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  text-align: left;
+  word-break: break-word;
+}
+
+.update-dialog__actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  width: 100%;
+}
+
+/* Soft info variant for cookies banner (no cookies set, not an error) */
+.cookies-banner--info {
+  background: rgba(99, 102, 241, 0.06);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  color: var(--text-secondary);
+}

@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Lightweight i18n system — no external dependencies.
  * Language is persisted to localStorage under "app-language".
  */
@@ -54,8 +54,6 @@ const en = {
   topBar_addDownload: "Add Download",
   topBar_select: "Select",
   topBar_exitSelect: "Exit Select",
-  topBar_pause: "Pause",
-  topBar_resume: "Resume",
   topBar_show: "Show",
   topBar_rename: "Rename",
   topBar_remove: "Remove",
@@ -101,6 +99,10 @@ const en = {
   col_date: "Date",
   col_progress: "Progress",
 
+  // Empty state
+  empty_title: "No downloads yet",
+  empty_desc: "Click \"Add Download\" to get started",
+
   // ContextMenu / status
   ctx_openFile: "Open File",
   ctx_showInFolder: "Show in Folder",
@@ -114,6 +116,19 @@ const en = {
   common_clear: "Clear",
   common_close: "Close",
   common_save: "Save",
+
+  // yt-dlp update dialog
+  update_title: "yt-dlp Update Available",
+  update_desc: "A new version of yt-dlp is available. Keeping yt-dlp up to date helps avoid download errors.",
+  update_current: "Current version:",
+  update_latest: "Latest version:",
+  update_now: "Update Now",
+  update_skip: "Skip",
+  update_updating: "Updating...",
+  update_success: "yt-dlp updated successfully!",
+  update_error: "Update failed:",
+  update_checking: "Checking for yt-dlp updates...",
+  update_upToDate: "yt-dlp is up to date",
 };
 
 const tr: Translations = {
@@ -138,8 +153,6 @@ const tr: Translations = {
   topBar_addDownload: "İndirme Ekle",
   topBar_select: "Seç",
   topBar_exitSelect: "Seçimi Bitir",
-  topBar_pause: "Duraklat",
-  topBar_resume: "Devam Et",
   topBar_show: "Göster",
   topBar_rename: "Yeniden Adlandır",
   topBar_remove: "Listeden Kaldır",
@@ -182,6 +195,9 @@ const tr: Translations = {
   col_date: "Tarih",
   col_progress: "İlerleme",
 
+  empty_title: "Henüz indirme yok",
+  empty_desc: "Başlamak için \"İndirme Ekle\"ye tıklayın",
+
   ctx_openFile: "Dosyayı Aç",
   ctx_showInFolder: "Klasörde Göster",
   ctx_rename: "Yeniden Adlandır",
@@ -193,6 +209,18 @@ const tr: Translations = {
   common_clear: "Temizle",
   common_close: "Kapat",
   common_save: "Kaydet",
+
+  update_title: "yt-dlp Güncellemesi Mevcut",
+  update_desc: "yt-dlp'nin yeni bir sürümü var. Güncel tutmak indirme hatalarını önler.",
+  update_current: "Mevcut sürüm:",
+  update_latest: "Son sürüm:",
+  update_now: "Şimdi Güncelle",
+  update_skip: "Atla",
+  update_updating: "Güncelleniyor...",
+  update_success: "yt-dlp başarıyla güncellendi!",
+  update_error: "Güncelleme başarısız:",
+  update_checking: "yt-dlp güncellemesi kontrol ediliyor...",
+  update_upToDate: "yt-dlp güncel",
 };
 
 const es: Translations = {
@@ -215,8 +243,6 @@ const es: Translations = {
   topBar_addDownload: "Agregar descarga",
   topBar_select: "Seleccionar",
   topBar_exitSelect: "Salir",
-  topBar_pause: "Pausar",
-  topBar_resume: "Reanudar",
   topBar_show: "Mostrar",
   topBar_rename: "Renombrar",
   topBar_remove: "Eliminar",
@@ -255,6 +281,8 @@ const es: Translations = {
   col_size: "Tamaño",
   col_date: "Fecha",
   col_progress: "Progreso",
+  empty_title: "Aún no hay descargas",
+  empty_desc: "Haz clic en \"Agregar descarga\" para empezar",
   ctx_openFile: "Abrir archivo",
   ctx_showInFolder: "Mostrar en carpeta",
   ctx_rename: "Renombrar",
@@ -265,6 +293,17 @@ const es: Translations = {
   common_clear: "Limpiar",
   common_close: "Cerrar",
   common_save: "Guardar",
+  update_title: "Actualización de yt-dlp disponible",
+  update_desc: "Hay una nueva versión de yt-dlp. Mantenerlo actualizado evita errores de descarga.",
+  update_current: "Versión actual:",
+  update_latest: "Última versión:",
+  update_now: "Actualizar ahora",
+  update_skip: "Omitir",
+  update_updating: "Actualizando...",
+  update_success: "¡yt-dlp actualizado correctamente!",
+  update_error: "Error al actualizar:",
+  update_checking: "Buscando actualizaciones de yt-dlp...",
+  update_upToDate: "yt-dlp está actualizado",
 };
 
 const fr: Translations = {
@@ -287,8 +326,6 @@ const fr: Translations = {
   topBar_addDownload: "Ajouter",
   topBar_select: "Sélectionner",
   topBar_exitSelect: "Quitter",
-  topBar_pause: "Pause",
-  topBar_resume: "Reprendre",
   topBar_show: "Afficher",
   topBar_rename: "Renommer",
   topBar_remove: "Retirer",
@@ -327,6 +364,8 @@ const fr: Translations = {
   col_size: "Taille",
   col_date: "Date",
   col_progress: "Progression",
+  empty_title: "Aucun téléchargement",
+  empty_desc: "Cliquez sur \"Ajouter\" pour commencer",
   ctx_openFile: "Ouvrir le fichier",
   ctx_showInFolder: "Afficher dans le dossier",
   ctx_rename: "Renommer",
@@ -337,6 +376,17 @@ const fr: Translations = {
   common_clear: "Effacer",
   common_close: "Fermer",
   common_save: "Enregistrer",
+  update_title: "Mise à jour yt-dlp disponible",
+  update_desc: "Une nouvelle version de yt-dlp est disponible. Rester à jour évite les erreurs.",
+  update_current: "Version actuelle :",
+  update_latest: "Dernière version :",
+  update_now: "Mettre à jour",
+  update_skip: "Ignorer",
+  update_updating: "Mise à jour...",
+  update_success: "yt-dlp mis à jour avec succès !",
+  update_error: "Échec de la mise à jour :",
+  update_checking: "Vérification des mises à jour de yt-dlp...",
+  update_upToDate: "yt-dlp est à jour",
 };
 
 const de: Translations = {
@@ -359,8 +409,6 @@ const de: Translations = {
   topBar_addDownload: "Download hinzufügen",
   topBar_select: "Auswählen",
   topBar_exitSelect: "Beenden",
-  topBar_pause: "Pausieren",
-  topBar_resume: "Fortsetzen",
   topBar_show: "Anzeigen",
   topBar_rename: "Umbenennen",
   topBar_remove: "Entfernen",
@@ -399,6 +447,8 @@ const de: Translations = {
   col_size: "Größe",
   col_date: "Datum",
   col_progress: "Fortschritt",
+  empty_title: "Noch keine Downloads",
+  empty_desc: "Klicken Sie auf \"Download hinzufügen\" um zu beginnen",
   ctx_openFile: "Datei öffnen",
   ctx_showInFolder: "Im Ordner anzeigen",
   ctx_rename: "Umbenennen",
@@ -409,6 +459,17 @@ const de: Translations = {
   common_clear: "Löschen",
   common_close: "Schließen",
   common_save: "Speichern",
+  update_title: "yt-dlp Update verfügbar",
+  update_desc: "Eine neue Version von yt-dlp ist verfügbar. Aktuell bleiben vermeidet Download-Fehler.",
+  update_current: "Aktuelle Version:",
+  update_latest: "Neueste Version:",
+  update_now: "Jetzt aktualisieren",
+  update_skip: "Überspringen",
+  update_updating: "Wird aktualisiert...",
+  update_success: "yt-dlp erfolgreich aktualisiert!",
+  update_error: "Update fehlgeschlagen:",
+  update_checking: "Prüfe yt-dlp Updates...",
+  update_upToDate: "yt-dlp ist aktuell",
 };
 
 const pt: Translations = {
@@ -431,8 +492,6 @@ const pt: Translations = {
   topBar_addDownload: "Adicionar download",
   topBar_select: "Selecionar",
   topBar_exitSelect: "Sair",
-  topBar_pause: "Pausar",
-  topBar_resume: "Retomar",
   topBar_show: "Mostrar",
   topBar_rename: "Renomear",
   topBar_remove: "Remover",
@@ -471,6 +530,8 @@ const pt: Translations = {
   col_size: "Tamanho",
   col_date: "Data",
   col_progress: "Progresso",
+  empty_title: "Nenhum download ainda",
+  empty_desc: "Clique em \"Adicionar download\" para começar",
   ctx_openFile: "Abrir arquivo",
   ctx_showInFolder: "Mostrar na pasta",
   ctx_rename: "Renomear",
@@ -481,6 +542,17 @@ const pt: Translations = {
   common_clear: "Limpar",
   common_close: "Fechar",
   common_save: "Salvar",
+  update_title: "Atualização do yt-dlp disponível",
+  update_desc: "Uma nova versão do yt-dlp está disponível. Manter atualizado evita erros de download.",
+  update_current: "Versão atual:",
+  update_latest: "Última versão:",
+  update_now: "Atualizar agora",
+  update_skip: "Ignorar",
+  update_updating: "Atualizando...",
+  update_success: "yt-dlp atualizado com sucesso!",
+  update_error: "Falha na atualização:",
+  update_checking: "Verificando atualizações do yt-dlp...",
+  update_upToDate: "yt-dlp está atualizado",
 };
 
 const ar: Translations = {
@@ -503,8 +575,6 @@ const ar: Translations = {
   topBar_addDownload: "إضافة تنزيل",
   topBar_select: "تحديد",
   topBar_exitSelect: "إلغاء",
-  topBar_pause: "إيقاف مؤقت",
-  topBar_resume: "استئناف",
   topBar_show: "إظهار",
   topBar_rename: "إعادة تسمية",
   topBar_remove: "إزالة",
@@ -543,6 +613,8 @@ const ar: Translations = {
   col_size: "الحجم",
   col_date: "التاريخ",
   col_progress: "التقدم",
+  empty_title: "لا توجد تنزيلات بعد",
+  empty_desc: "انقر على \"إضافة تنزيل\" للبدء",
   ctx_openFile: "فتح الملف",
   ctx_showInFolder: "إظهار في المجلد",
   ctx_rename: "إعادة تسمية",
@@ -553,6 +625,17 @@ const ar: Translations = {
   common_clear: "مسح",
   common_close: "إغلاق",
   common_save: "حفظ",
+  update_title: "تحديث yt-dlp متاح",
+  update_desc: "يتوفر إصدار جديد من yt-dlp. يساعد الإبقاء على تحديثه في تجنب أخطاء التنزيل.",
+  update_current: "الإصدار الحالي:",
+  update_latest: "أحدث إصدار:",
+  update_now: "تحديث الآن",
+  update_skip: "تخطي",
+  update_updating: "جارٍ التحديث...",
+  update_success: "تم تحديث yt-dlp بنجاح!",
+  update_error: "فشل التحديث:",
+  update_checking: "جارٍ التحقق من تحديثات yt-dlp...",
+  update_upToDate: "yt-dlp محدّث",
 };
 
 const ja: Translations = {
@@ -575,8 +658,6 @@ const ja: Translations = {
   topBar_addDownload: "ダウンロード追加",
   topBar_select: "選択",
   topBar_exitSelect: "選択解除",
-  topBar_pause: "一時停止",
-  topBar_resume: "再開",
   topBar_show: "表示",
   topBar_rename: "名前変更",
   topBar_remove: "削除",
@@ -615,6 +696,8 @@ const ja: Translations = {
   col_size: "サイズ",
   col_date: "日付",
   col_progress: "進捗",
+  empty_title: "ダウンロードはまだありません",
+  empty_desc: "\"ダウンロード追加\"をクリックして開始",
   ctx_openFile: "ファイルを開く",
   ctx_showInFolder: "フォルダに表示",
   ctx_rename: "名前変更",
@@ -625,6 +708,17 @@ const ja: Translations = {
   common_clear: "クリア",
   common_close: "閉じる",
   common_save: "保存",
+  update_title: "yt-dlp アップデートあり",
+  update_desc: "yt-dlpの新しいバージョンが利用可能です。最新に保つとエラーを防げます。",
+  update_current: "現在のバージョン:",
+  update_latest: "最新バージョン:",
+  update_now: "今すぐ更新",
+  update_skip: "スキップ",
+  update_updating: "更新中...",
+  update_success: "yt-dlpが正常に更新されました！",
+  update_error: "更新に失敗しました:",
+  update_checking: "yt-dlpのアップデートを確認中...",
+  update_upToDate: "yt-dlpは最新です",
 };
 
 const ko: Translations = {
@@ -647,8 +741,6 @@ const ko: Translations = {
   topBar_addDownload: "다운로드 추가",
   topBar_select: "선택",
   topBar_exitSelect: "선택 해제",
-  topBar_pause: "일시 중지",
-  topBar_resume: "재개",
   topBar_show: "표시",
   topBar_rename: "이름 변경",
   topBar_remove: "제거",
@@ -687,6 +779,8 @@ const ko: Translations = {
   col_size: "크기",
   col_date: "날짜",
   col_progress: "진행률",
+  empty_title: "다운로드가 없습니다",
+  empty_desc: "\"다운로드 추가\"를 클릭하여 시작하세요",
   ctx_openFile: "파일 열기",
   ctx_showInFolder: "폴더에서 표시",
   ctx_rename: "이름 변경",
@@ -697,6 +791,17 @@ const ko: Translations = {
   common_clear: "지우기",
   common_close: "닫기",
   common_save: "저장",
+  update_title: "yt-dlp 업데이트 가능",
+  update_desc: "새 버전의 yt-dlp가 있습니다. 최신 상태를 유지하면 오류를 방지할 수 있습니다.",
+  update_current: "현재 버전:",
+  update_latest: "최신 버전:",
+  update_now: "지금 업데이트",
+  update_skip: "건너뛰기",
+  update_updating: "업데이트 중...",
+  update_success: "yt-dlp가 성공적으로 업데이트되었습니다!",
+  update_error: "업데이트 실패:",
+  update_checking: "yt-dlp 업데이트 확인 중...",
+  update_upToDate: "yt-dlp가 최신입니다",
 };
 
 const zh: Translations = {
@@ -719,8 +824,6 @@ const zh: Translations = {
   topBar_addDownload: "添加下载",
   topBar_select: "选择",
   topBar_exitSelect: "退出选择",
-  topBar_pause: "暂停",
-  topBar_resume: "继续",
   topBar_show: "显示",
   topBar_rename: "重命名",
   topBar_remove: "移除",
@@ -759,6 +862,8 @@ const zh: Translations = {
   col_size: "大小",
   col_date: "日期",
   col_progress: "进度",
+  empty_title: "暂无下载",
+  empty_desc: "点击\"添加下载\"开始",
   ctx_openFile: "打开文件",
   ctx_showInFolder: "在文件夹中显示",
   ctx_rename: "重命名",
@@ -769,6 +874,17 @@ const zh: Translations = {
   common_clear: "清除",
   common_close: "关闭",
   common_save: "保存",
+  update_title: "yt-dlp 有可用更新",
+  update_desc: "yt-dlp 有新版本可用。保持最新版本有助于避免下载错误。",
+  update_current: "当前版本：",
+  update_latest: "最新版本：",
+  update_now: "立即更新",
+  update_skip: "跳过",
+  update_updating: "更新中...",
+  update_success: "yt-dlp 更新成功！",
+  update_error: "更新失败：",
+  update_checking: "正在检查 yt-dlp 更新...",
+  update_upToDate: "yt-dlp 已是最新版本",
 };
 
 // ─── Translation map ─────────────────────────────────────────────────────────

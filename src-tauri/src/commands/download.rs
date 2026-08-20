@@ -239,10 +239,10 @@ async fn spawn_download(
         let final_status = if success {
             DownloadStatus::Completed
         } else {
-            // Check if it was paused/cancelled (process killed intentionally)
+            // Check if it was cancelled (process killed intentionally)
             let downloads = state_downloads.lock().await;
             if let Some(dl) = downloads.iter().find(|d| d.id == id_clone) {
-                if dl.status == DownloadStatus::Paused || dl.status == DownloadStatus::Cancelled {
+                if dl.status == DownloadStatus::Cancelled {
                     return; // Don't overwrite intentional status
                 }
             }
@@ -289,90 +289,6 @@ async fn spawn_download(
     });
 
     Ok(())
-}
-
-/// Pause a download (kills the process, marks as paused)
-#[tauri::command]
-pub async fn pause_download(
-    app: AppHandle,
-    state: State<'_, AppState>,
-    id: String,
-) -> Result<(), String> {
-    // Update status FIRST so the completion handler knows it was intentional
-    {
-        let mut downloads = state.downloads.lock().await;
-        if let Some(dl) = downloads.iter_mut().find(|d| d.id == id) {
-            dl.status = DownloadStatus::Paused;
-            dl.speed = String::new();
-        }
-        let data_dir = state.data_dir.lock().await;
-        store::save_downloads(&data_dir, &downloads);
-    }
-
-    // Then kill the process
-    {
-        let mut processes = state.active_processes.lock().await;
-        if let Some(child) = processes.get_mut(&id) {
-            child.kill().await.ok();
-        }
-        processes.remove(&id);
-    }
-
-    let current_progress = {
-        let downloads = state.downloads.lock().await;
-        downloads.iter().find(|d| d.id == id).map(|d| d.progress).unwrap_or(0.0)
-    };
-
-    app.emit("download-progress", ProgressEvent {
-        id,
-        status: DownloadStatus::Paused,
-        progress: current_progress,
-        speed: String::new(),
-        error: None,
-    }).ok();
-
-    Ok(())
-}
-
-/// Resume a paused download (restarts yt-dlp with --continue, using stored format args)
-#[tauri::command]
-pub async fn resume_download(
-    app: AppHandle,
-    state: State<'_, AppState>,
-    id: String,
-) -> Result<(), String> {
-    let (url, output_path, stored_format_args) = {
-        let downloads = state.downloads.lock().await;
-        let dl = downloads
-            .iter()
-            .find(|d| d.id == id)
-            .ok_or("Download not found")?;
-        (dl.url.clone(), dl.file_path.clone(), dl.format_args.clone())
-    };
-
-    // Update status
-    {
-        let mut downloads = state.downloads.lock().await;
-        if let Some(dl) = downloads.iter_mut().find(|d| d.id == id) {
-            dl.status = DownloadStatus::Downloading;
-        }
-        let data_dir = state.data_dir.lock().await;
-        store::save_downloads(&data_dir, &downloads);
-    }
-
-    // Use stored format args; fall back to best quality if none stored
-    let mut args = if stored_format_args.is_empty() {
-        vec!["-f".to_string(), "bestvideo+bestaudio/best".to_string()]
-    } else {
-        stored_format_args
-    };
-
-    // Add --continue flag to resume
-    if !args.contains(&"--continue".to_string()) {
-        args.push("--continue".to_string());
-    }
-
-    spawn_download(app, state, id, url, args, output_path).await
 }
 
 /// Cancel a download and remove partial files

@@ -1,14 +1,13 @@
 import React from "react";
 import { useDownloadStore } from "../store/useDownloadStore";
 import {
-  IconPause,
-  IconPlay,
   IconFolderOpen,
   IconEdit,
   IconX,
   IconTrash,
 } from "./Icons";
 import * as api from "../lib/tauri";
+import { useLanguage } from "../hooks/useLanguage";
 
 interface ContextMenuProps {
   x: number;
@@ -23,26 +22,14 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
   downloadId,
   onClose,
 }) => {
+  const { t } = useLanguage();
   const { downloads, removeDownloadsFromList, setRenameDialogId, setConfirmDeleteIds } =
     useDownloadStore();
   const download = downloads.find((d) => d.id === downloadId);
 
   if (!download) return null;
 
-  const isActive =
-    download.status === "downloading" || download.status === "processing";
-  const isPaused = download.status === "paused";
   const isCompleted = download.status === "completed";
-
-  const handlePause = async () => {
-    onClose();
-    await api.pauseDownload(downloadId);
-  };
-
-  const handleResume = async () => {
-    onClose();
-    await api.resumeDownload(downloadId);
-  };
 
   const handleDelete = () => {
     onClose();
@@ -67,6 +54,11 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
     }
   };
 
+  const handleCopyUrl = () => {
+    onClose();
+    navigator.clipboard.writeText(download.url).catch(() => {});
+  };
+
   // Adjust position to stay within viewport
   const menuStyle: React.CSSProperties = {
     position: "fixed",
@@ -82,32 +74,30 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
         style={menuStyle}
         onClick={(e) => e.stopPropagation()}
       >
-        {isActive && (
-          <button className="context-menu-item" onClick={handlePause}>
-            <span className="menu-icon"><IconPause size={14} /></span> Pause
-          </button>
-        )}
-        {isPaused && (
-          <button className="context-menu-item" onClick={handleResume}>
-            <span className="menu-icon"><IconPlay size={14} /></span> Resume
-          </button>
-        )}
         {isCompleted && (
           <>
             <button className="context-menu-item" onClick={handleShowInFolder}>
-              <span className="menu-icon"><IconFolderOpen size={14} /></span> Show in Folder
+              <span className="menu-icon"><IconFolderOpen size={14} /></span> {t("ctx_showInFolder")}
             </button>
             <button className="context-menu-item" onClick={handleRename}>
-              <span className="menu-icon"><IconEdit size={14} /></span> Rename
+              <span className="menu-icon"><IconEdit size={14} /></span> {t("ctx_rename")}
             </button>
           </>
         )}
+        <button className="context-menu-item" onClick={handleCopyUrl}>
+          <span className="menu-icon">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+              <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+            </svg>
+          </span> {t("ctx_copyUrl")}
+        </button>
         <div className="context-menu-divider" />
         <button className="context-menu-item" onClick={handleRemove}>
-          <span className="menu-icon"><IconX size={14} /></span> Remove from List
+          <span className="menu-icon"><IconX size={14} /></span> {t("ctx_remove")}
         </button>
         <button className="context-menu-item danger" onClick={handleDelete}>
-          <span className="menu-icon"><IconTrash size={14} /></span> Delete File
+          <span className="menu-icon"><IconTrash size={14} /></span> {t("ctx_deleteFile")}
         </button>
       </div>
     </div>

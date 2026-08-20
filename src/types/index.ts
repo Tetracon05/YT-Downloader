@@ -7,7 +7,6 @@ export type DownloadStatus =
   | "processing"
   | "completed"
   | "failed"
-  | "paused"
   | "cancelled";
 
 export type DownloadKind = "video" | "audio" | "videoaudio";
@@ -71,6 +70,12 @@ export interface DependencyStatus {
   ffmpeg_installed: boolean;
   yt_dlp_version: string | null;
   ffmpeg_version: string | null;
+}
+
+export interface UpdateCheckResult {
+  current_version: string;
+  latest_version: string;
+  update_available: boolean;
 }
 
 // ===== UI State Types =====

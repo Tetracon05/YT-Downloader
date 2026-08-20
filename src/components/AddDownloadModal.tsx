@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useDownloadStore } from "../store/useDownloadStore";
 import { VideoTab } from "./VideoTab";
 import { AudioTab } from "./AudioTab";
@@ -6,9 +6,11 @@ import * as api from "../lib/tauri";
 import { generateId, formatDuration } from "../lib/utils";
 import type { AnalysisResult, TabType } from "../types";
 import { open } from "@tauri-apps/plugin-dialog";
+import { useLanguage } from "../hooks/useLanguage";
 
 export const AddDownloadModal: React.FC = () => {
   const { isAddPanelOpen, setAddPanelOpen, loadDownloads } = useDownloadStore();
+  const { t } = useLanguage();
 
   const [url, setUrl] = useState("");
   const [analysis, setAnalysis] = useState<AnalysisResult | null>(null);
@@ -184,41 +186,39 @@ export const AddDownloadModal: React.FC = () => {
     <div className="modal-overlay" onClick={handleClose}>
       <div className="add-download-modal" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
-          <h2 className="modal-title">Add Download</h2>
+          <h2 className="modal-title">{t("modal_title")}</h2>
           <button className="modal-close" onClick={handleClose}>X</button>
         </div>
 
         <div className="modal-body">
-          {/* Cookies banner */}
-          <div className={`cookies-banner ${cookiesFile ? "cookies-banner--active" : "cookies-banner--warning"}`}>
-            {cookiesFile ? (
-              <>
-                <span className="cookies-banner__icon">C</span>
-                <span className="cookies-banner__text"><strong>Cookies:</strong> {cookiesFileName}</span>
-                <button className="cookies-banner__btn cookies-banner__btn--change" onClick={handleSelectCookiesFile}>Change</button>
-                <button className="cookies-banner__btn cookies-banner__btn--clear" onClick={handleClearCookies}>X</button>
-              </>
-            ) : (
-              <>
-                <span className="cookies-banner__icon">!</span>
-                <span className="cookies-banner__text">
-                  <strong>No cookies set</strong> - YouTube limits quality to 360p.{" "}
-                  <a href="https://github.com/yt-dlp/yt-dlp/wiki/FAQ#how-do-i-pass-cookies-to-yt-dlp"
-                     target="_blank" rel="noreferrer" className="cookies-banner__link">
-                    How to get cookies.txt
-                  </a>
-                </span>
-                <button className="cookies-banner__btn cookies-banner__btn--set" onClick={handleSelectCookiesFile}>
-                  Select cookies.txt
-                </button>
-              </>
-            )}
-          </div>
+          {/* Cookies banner — optional, non-intrusive */}
+          {cookiesFile ? (
+            <div className="cookies-banner cookies-banner--active">
+              <span className="cookies-banner__icon">C</span>
+              <span className="cookies-banner__text"><strong>Cookies:</strong> {cookiesFileName}</span>
+              <button className="cookies-banner__btn cookies-banner__btn--change" onClick={handleSelectCookiesFile}>{t("common_change")}</button>
+              <button className="cookies-banner__btn cookies-banner__btn--clear" onClick={handleClearCookies}>X</button>
+            </div>
+          ) : (
+            <div className="cookies-banner cookies-banner--info">
+              <span className="cookies-banner__icon">🍪</span>
+              <span className="cookies-banner__text">
+                {t("modal_noCookies")}{" "}
+                <a href="https://github.com/yt-dlp/yt-dlp/wiki/FAQ#how-do-i-pass-cookies-to-yt-dlp"
+                   target="_blank" rel="noreferrer" className="cookies-banner__link">
+                  {t("modal_howToCookies")}
+                </a>
+              </span>
+              <button className="cookies-banner__btn cookies-banner__btn--set" onClick={handleSelectCookiesFile}>
+                {t("modal_selectCookies")}
+              </button>
+            </div>
+          )}
 
           <div className="form-group">
             <div className="url-input-wrapper">
               <input type="text" className="form-input url-input"
-                placeholder="Paste a video or audio URL..."
+                placeholder={t("modal_urlPlaceholder")}
                 value={url} onChange={handleUrlChange} onPaste={handlePaste} autoFocus />
               {analyzing && <div className="url-spinner"><div className="spinner" /></div>}
             </div>
@@ -268,10 +268,10 @@ export const AddDownloadModal: React.FC = () => {
         </div>
 
         <div className="modal-footer">
-          <button className="btn btn-secondary" onClick={handleClose}>Cancel</button>
+          <button className="btn btn-secondary" onClick={handleClose}>{t("modal_cancel")}</button>
           <button className="btn btn-primary" onClick={handleStartDownload}
             disabled={!analysis || analyzing || downloading}>
-            {downloading ? (<><div className="spinner spinner-small" /> Starting...</>) : "Start Download"}
+            {downloading ? (<><div className="spinner spinner-small" /> {t("modal_starting")}</>) : t("modal_startDownload")}
           </button>
         </div>
       </div>

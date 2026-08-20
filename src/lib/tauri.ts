@@ -3,6 +3,7 @@ import type {
   AnalysisResult,
   DependencyStatus,
   DownloadEntry,
+  UpdateCheckResult,
 } from "../types";
 
 // ===== Dependency Commands =====
@@ -17,6 +18,14 @@ export async function installYtDlp(): Promise<string> {
 
 export async function installFfmpeg(): Promise<string> {
   return invoke("install_ffmpeg");
+}
+
+export async function checkYtDlpUpdate(): Promise<UpdateCheckResult> {
+  return invoke("check_yt_dlp_update");
+}
+
+export async function updateYtDlp(): Promise<string> {
+  return invoke("update_yt_dlp");
 }
 
 // ===== Analysis Commands =====
@@ -40,14 +49,6 @@ export async function startDownload(params: {
   kind: string;
 }): Promise<void> {
   return invoke("start_download", params);
-}
-
-export async function pauseDownload(id: string): Promise<void> {
-  return invoke("pause_download", { id });
-}
-
-export async function resumeDownload(id: string): Promise<void> {
-  return invoke("resume_download", { id });
 }
 
 export async function cancelDownload(id: string): Promise<void> {

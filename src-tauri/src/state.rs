@@ -13,7 +13,6 @@ pub enum DownloadStatus {
     Processing,
     Completed,
     Failed,
-    Paused,
     Cancelled,
 }
 
@@ -94,6 +93,14 @@ pub struct DependencyStatus {
     pub ffmpeg_installed: bool,
     pub yt_dlp_version: Option<String>,
     pub ffmpeg_version: Option<String>,
+}
+
+/// Result of checking whether yt-dlp has an update available
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct UpdateCheckResult {
+    pub current_version: String,
+    pub latest_version: String,
+    pub update_available: bool,
 }
 
 /// Shared application state managed by Tauri

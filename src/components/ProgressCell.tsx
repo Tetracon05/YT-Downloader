@@ -46,9 +46,6 @@ export const ProgressCell: React.FC<ProgressCellProps> = ({ download }) => {
         </div>
       )}
 
-      {status === "paused" && (
-        <span className="progress-label paused-label">Paused</span>
-      )}
 
       {status === "pending" && (
         <span className="progress-label pending-label">Queued</span>
