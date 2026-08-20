@@ -1,3 +1,11 @@
+
+<img width="1128" height="817" alt="SCR-20260820-ksuk" src="https://github.com/user-attachments/assets/e0f9fbb2-12eb-4751-b100-0839660d4a34" />
+
+<img width="1072" height="792" alt="SCR-20260820-kppx" src="https://github.com/user-attachments/assets/b0414769-0783-43f7-9946-c48844c5da64" />
+
+<img width="1128" height="817" alt="SCR-20260820-kswl" src="https://github.com/user-attachments/assets/86335e44-0fc0-424f-9385-6dc987fa1cdf" />
+
+
 # YT Downloader
 
 A modern, cross-platform desktop application for downloading videos and audio using [yt-dlp](https://github.com/yt-dlp/yt-dlp). Built with [Tauri v2](https://tauri.app/) (Rust backend) and React + TypeScript + Tailwind CSS (frontend).
