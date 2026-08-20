@@ -236,6 +236,7 @@ pub async fn start_drag(
         // 32x32 white PNG bytes as a minimal drag icon
         let icon = drag::Image::Raw(vec![]);
 
+        #[cfg(target_os = "windows")]
         let result = drag::start_drag(
             &window,
             item,
@@ -247,6 +248,27 @@ pub async fn start_drag(
             },
         )
         .map_err(|e| format!("Failed to start native drag: {}", e));
+
+        #[cfg(target_os = "linux")]
+        let result = (|| {
+            let gtk_window = window
+                .gtk_window()
+                .map_err(|e| format!("Failed to get GTK window: {}", e))?;
+            drag::start_drag(
+                &gtk_window,
+                item,
+                icon,
+                |_result, _cursor_pos| { /* drag ended — no-op */ },
+                drag::Options {
+                    mode: drag::DragMode::Copy,
+                    skip_animatation_on_cancel_or_failure: false,
+                },
+            )
+            .map_err(|e| format!("Failed to start native drag: {}", e))
+        })();
+
+        #[cfg(not(any(target_os = "windows", target_os = "linux")))]
+        let result: Result<(), String> = Err("Drag is not supported on this platform".to_string());
 
         let _ = tx.send(result);
     })
