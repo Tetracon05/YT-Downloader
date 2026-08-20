@@ -39,7 +39,7 @@ Although named **YT Downloader**, the application leverages yt-dlp's universal e
 ## Features
 
 - 🌐 **1800+ Websites Supported**: Download videos, clips, reels, and audio from virtually any online video or streaming platform.
-- 🚀 **Automatic yt-dlp Version Check**: Checks for new yt-dlp updates on startup and offers one-click upgrades to keep site extractors compatible.
+- 🔄 **Automatic yt-dlp Version Check**: Checks for new yt-dlp updates on startup and offers one-click upgrades to keep site extractors compatible.
 - 🍪 **Authentication & Cookies (cookies.txt)**: Optional cookies support to download age-restricted, member-only, or private content across YouTube and other platforms.
 - 🌍 **Multi-Language Support**: 10 built-in languages (English, Türkçe, Español, Français, Deutsch, Português, العربية, 日本語, 한국어, 中文).
 - ⚙️ **Settings Drawer**: Easy management of cookies, appearance themes, and language preferences.
