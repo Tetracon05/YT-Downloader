@@ -7,6 +7,20 @@ use tauri::Manager;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
+    #[cfg(target_os = "linux")]
+    {
+        if let Some(home) = dirs::home_dir() {
+            let local_bin = home.join(".local").join("bin");
+            if let Some(path) = std::env::var_os("PATH") {
+                let mut paths = vec![local_bin, std::path::PathBuf::from("/usr/local/bin")];
+                paths.extend(std::env::split_paths(&path));
+                if let Ok(new_path) = std::env::join_paths(paths) {
+                    std::env::set_var("PATH", &new_path);
+                }
+            }
+        }
+    }
+
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_dialog::init())

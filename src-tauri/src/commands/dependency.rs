@@ -127,67 +127,7 @@ pub async fn install_yt_dlp() -> Result<String, String> {
 
     #[cfg(target_os = "linux")]
     {
-        // 1. Try pip3 (with --break-system-packages for Debian 12+/Ubuntu 23+)
-        if let Ok(output) = Command::new("pip3")
-            .args(["install", "--break-system-packages", "yt-dlp"])
-            .output()
-        {
-            if output.status.success() {
-                return Ok("yt-dlp installed successfully via pip3".to_string());
-            }
-        }
-
-        // Standard pip3 fallback
-        if let Ok(output) = Command::new("pip3")
-            .args(["install", "yt-dlp"])
-            .output()
-        {
-            if output.status.success() {
-                return Ok("yt-dlp installed successfully via pip3".to_string());
-            }
-        }
-
-        // 2. Try pipx
-        if let Ok(output) = Command::new("pipx")
-            .args(["install", "yt-dlp"])
-            .output()
-        {
-            if output.status.success() {
-                return Ok("yt-dlp installed successfully via pipx".to_string());
-            }
-        }
-
-        // 3. Try apt (Debian/Ubuntu)
-        if let Ok(output) = Command::new("sudo")
-            .args(["apt", "install", "-y", "yt-dlp"])
-            .output()
-        {
-            if output.status.success() {
-                return Ok("yt-dlp installed successfully via apt".to_string());
-            }
-        }
-
-        // 4. Try dnf (Fedora/RHEL)
-        if let Ok(output) = Command::new("sudo")
-            .args(["dnf", "install", "-y", "yt-dlp"])
-            .output()
-        {
-            if output.status.success() {
-                return Ok("yt-dlp installed successfully via dnf".to_string());
-            }
-        }
-
-        // 5. Try pacman (Arch Linux)
-        if let Ok(output) = Command::new("sudo")
-            .args(["pacman", "-S", "--noconfirm", "yt-dlp"])
-            .output()
-        {
-            if output.status.success() {
-                return Ok("yt-dlp installed successfully via pacman".to_string());
-            }
-        }
-
-        // 6. Direct binary download via curl to ~/.local/bin/yt-dlp
+        // 1. Direct binary download via curl to ~/.local/bin/yt-dlp (Guaranteed latest official release)
         if let Some(home) = dirs::home_dir() {
             let local_bin = home.join(".local").join("bin");
             let _ = std::fs::create_dir_all(&local_bin);
@@ -213,7 +153,65 @@ pub async fn install_yt_dlp() -> Result<String, String> {
             }
         }
 
-        Err("Failed to install yt-dlp. Tried pip3, pipx, apt, dnf, pacman, and direct download. Please install manually.".to_string())
+        // 2. Try pip3 (with --break-system-packages for Debian 12+/Ubuntu 23+)
+        if let Ok(output) = Command::new("pip3")
+            .args(["install", "--user", "--break-system-packages", "yt-dlp"])
+            .output()
+        {
+            if output.status.success() {
+                return Ok("yt-dlp installed successfully via pip3".to_string());
+            }
+        }
+
+        // Standard pip3 fallback
+        if let Ok(output) = Command::new("pip3")
+            .args(["install", "--user", "yt-dlp"])
+            .output()
+        {
+            if output.status.success() {
+                return Ok("yt-dlp installed successfully via pip3".to_string());
+            }
+        }
+
+        // 3. Try pipx
+        if let Ok(output) = Command::new("pipx")
+            .args(["install", "yt-dlp"])
+            .output()
+        {
+            if output.status.success() {
+                return Ok("yt-dlp installed successfully via pipx".to_string());
+            }
+        }
+
+        // 4. Try dnf / pacman / apt as system package manager fallbacks
+        if let Ok(output) = Command::new("sudo")
+            .args(["pacman", "-S", "--noconfirm", "yt-dlp"])
+            .output()
+        {
+            if output.status.success() {
+                return Ok("yt-dlp installed successfully via pacman".to_string());
+            }
+        }
+
+        if let Ok(output) = Command::new("sudo")
+            .args(["dnf", "install", "-y", "yt-dlp"])
+            .output()
+        {
+            if output.status.success() {
+                return Ok("yt-dlp installed successfully via dnf".to_string());
+            }
+        }
+
+        if let Ok(output) = Command::new("sudo")
+            .args(["apt", "install", "-y", "yt-dlp"])
+            .output()
+        {
+            if output.status.success() {
+                return Ok("yt-dlp installed successfully via apt".to_string());
+            }
+        }
+
+        Err("Failed to install yt-dlp. Tried direct download, pip3, pipx, pacman, dnf, and apt. Please install manually.".to_string())
     }
 }
 
@@ -431,7 +429,33 @@ pub async fn update_yt_dlp() -> Result<String, String> {
 
     #[cfg(target_os = "linux")]
     {
-        // 1. Try yt-dlp's built-in self-updater first
+        // 1. Direct binary download via curl to ~/.local/bin/yt-dlp (Guaranteed latest official release)
+        if let Some(home) = dirs::home_dir() {
+            let local_bin = home.join(".local").join("bin");
+            let _ = std::fs::create_dir_all(&local_bin);
+            let target_path = local_bin.join("yt-dlp");
+            let target_str = target_path.to_string_lossy().to_string();
+
+            if let Ok(output) = Command::new("curl")
+                .args([
+                    "-L",
+                    "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp",
+                    "-o",
+                    &target_str,
+                ])
+                .output()
+            {
+                if output.status.success() {
+                    let _ = Command::new("chmod").args(["a+rx", &target_str]).output();
+                    return Ok(format!(
+                        "yt-dlp updated to latest release in {}",
+                        target_str
+                    ));
+                }
+            }
+        }
+
+        // 2. Try yt-dlp's built-in self-updater
         if let Ok(output) = Command::new("yt-dlp").arg("-U").output() {
             if output.status.success() {
                 let stdout = String::from_utf8_lossy(&output.stdout);
@@ -442,9 +466,9 @@ pub async fn update_yt_dlp() -> Result<String, String> {
             }
         }
 
-        // 2. Try pip3 with --break-system-packages
+        // 3. Try pip3 with --break-system-packages
         if let Ok(output) = Command::new("pip3")
-            .args(["install", "-U", "--break-system-packages", "yt-dlp"])
+            .args(["install", "-U", "--user", "--break-system-packages", "yt-dlp"])
             .output()
         {
             if output.status.success() {
@@ -452,9 +476,9 @@ pub async fn update_yt_dlp() -> Result<String, String> {
             }
         }
 
-        // 3. Try standard pip3
+        // 4. Try standard pip3
         if let Ok(output) = Command::new("pip3")
-            .args(["install", "-U", "yt-dlp"])
+            .args(["install", "-U", "--user", "yt-dlp"])
             .output()
         {
             if output.status.success() {
@@ -462,7 +486,7 @@ pub async fn update_yt_dlp() -> Result<String, String> {
             }
         }
 
-        // 4. Try pipx
+        // 5. Try pipx
         if let Ok(output) = Command::new("pipx")
             .args(["upgrade", "yt-dlp"])
             .output()
@@ -472,27 +496,7 @@ pub async fn update_yt_dlp() -> Result<String, String> {
             }
         }
 
-        // 5. Try apt (Debian/Ubuntu)
-        if let Ok(output) = Command::new("sudo")
-            .args(["apt", "install", "--only-upgrade", "-y", "yt-dlp"])
-            .output()
-        {
-            if output.status.success() {
-                return Ok("yt-dlp updated successfully via apt".to_string());
-            }
-        }
-
-        // 6. Try dnf (Fedora/RHEL)
-        if let Ok(output) = Command::new("sudo")
-            .args(["dnf", "upgrade", "-y", "yt-dlp"])
-            .output()
-        {
-            if output.status.success() {
-                return Ok("yt-dlp updated successfully via dnf".to_string());
-            }
-        }
-
-        // 7. Try pacman (Arch Linux)
+        // 6. Try pacman / dnf as package manager fallbacks
         if let Ok(output) = Command::new("sudo")
             .args(["pacman", "-Sy", "--noconfirm", "yt-dlp"])
             .output()
@@ -502,6 +506,15 @@ pub async fn update_yt_dlp() -> Result<String, String> {
             }
         }
 
-        Err("Failed to update yt-dlp via yt-dlp -U, pip3, pipx, apt, dnf, or pacman.".to_string())
+        if let Ok(output) = Command::new("sudo")
+            .args(["dnf", "upgrade", "-y", "yt-dlp"])
+            .output()
+        {
+            if output.status.success() {
+                return Ok("yt-dlp updated successfully via dnf".to_string());
+            }
+        }
+
+        Err("Failed to update yt-dlp via direct download, yt-dlp -U, pip3, pipx, pacman, or dnf.".to_string())
     }
 }

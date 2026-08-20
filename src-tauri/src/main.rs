@@ -15,5 +15,20 @@ fn main() {
             }
         }
     }
+
+    #[cfg(target_os = "linux")]
+    {
+        // Prepend ~/.local/bin and /usr/local/bin so updated binaries take precedence over stale apt packages in /usr/bin
+        if let Some(home) = dirs::home_dir() {
+            let local_bin = home.join(".local").join("bin");
+            if let Some(path) = std::env::var_os("PATH") {
+                let mut paths = vec![local_bin, std::path::PathBuf::from("/usr/local/bin")];
+                paths.extend(std::env::split_paths(&path));
+                if let Ok(new_path) = std::env::join_paths(paths) {
+                    std::env::set_var("PATH", &new_path);
+                }
+            }
+        }
+    }
     tauri_app_lib::run()
 }
