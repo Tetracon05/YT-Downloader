@@ -7,31 +7,65 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-# Node
+# Node / Vite
 node_modules
 dist
 dist-ssr
 *.local
+.eslintcache
+.turbo
 
 # Tauri / Rust
+target/
 src-tauri/target/
 src-tauri/gen/
 **/*.rs.bk
+
+# Sensitive / Authentication / Environment
+.env
+.env.*
+*.env
+!*.env.example
+*cookie*.txt
+*.cookies
+
+# OS Files
+.DS_Store
+**/.DS_Store
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+desktop.ini
 
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
 .idea
-.DS_Store
+.fleet
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
+*.swp
+*.swo
+*~
 
-# Temporary test downloads
+# Temporary test files and media downloads
 *.part
 *.ytdl
+*.temp
+*.tmp
 test_*
 scratch_*
+downloads/
+*.mp4
+*.mkv
+*.webm
+*.mp3
+*.m4a
+*.opus
+*.flac
+*.wav
 
