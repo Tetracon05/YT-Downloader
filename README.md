@@ -1,4 +1,3 @@
-
 <img width="1128" height="817" alt="SCR-20260820-ksuk" src="https://github.com/user-attachments/assets/e0f9fbb2-12eb-4751-b100-0839660d4a34" />
 
 <img width="1072" height="792" alt="SCR-20260820-kppx" src="https://github.com/user-attachments/assets/b0414769-0783-43f7-9946-c48844c5da64" />
@@ -8,49 +7,73 @@
 
 # YT Downloader
 
-A modern, cross-platform desktop application for downloading videos and audio using [yt-dlp](https://github.com/yt-dlp/yt-dlp). Built with [Tauri v2](https://tauri.app/) (Rust backend) and React + TypeScript + Tailwind CSS (frontend).
+A modern, fast, and cross-platform desktop application for downloading videos and audio from **YouTube, Instagram, Twitch, TikTok, Twitter/X, Reddit, Facebook, Vimeo, SoundCloud, and [1800+ other websites](https://github.com/yt-dlp/yt-dlp/blob/master/supportedsites.md)**.
+
+Powered by [yt-dlp](https://github.com/yt-dlp/yt-dlp) and built with [Tauri v2](https://tauri.app/) (Rust backend) and React + TypeScript + Tailwind CSS (frontend).
 
 # Download / İndir
-https://github.com/Tetracon05/YT-Downloader/releases
-
-## Features
-
-- 🎬 Download video and audio from YouTube and 1000+ supported sites
-- 🍪 **YouTube Authentication (cookies.txt)**: Bypass YouTube 360p / 403 restrictions and unlock all HD/4K resolutions
-- 🌐 **Multi-Language Support**: 10 languages (English, Türkçe, Español, Français, Deutsch, Português, العربية, 日本語, 한국어, 中文)
-- ⚙️ **Settings Drawer**: Easy management of cookies, appearance themes, and language
-- 📊 Real-time progress tracking with speed display
-- 🎨 Theme options: System (automatic OS follow), Light, and Dark modes
-- 📁 Show downloaded files in system file manager
-- ✏️ Rename downloaded files
-- 🔄 Up to 3 concurrent downloads with automatic queuing
-- 💾 Download history persists across app restarts
-- ⚙️ First-run dependency check with one-click install
-- 🖱️ Native app experience without unwanted browser context menus
+👉 **[Get Latest Release (macOS, Windows, Linux)](https://github.com/Tetracon05/YT-Downloader/releases)**
 
 ---
 
-## 🍪 YouTube High-Quality Downloads (cookies.txt Guide)
+## 🌐 Supported Sites / Desteklenen Siteler
+
+Although named **YT Downloader**, the application leverages yt-dlp's universal extractor engine and supports **over 1,800 websites and platforms**, including:
+
+| Platform | Supported Content |
+| :--- | :--- |
+| **YouTube** | Videos, Shorts, Playlists, Audio-only streams (up to 4K/8K) |
+| **Instagram** | Reels, Stories, Posts, IGTV |
+| **Twitch** | Clips, Full VODs, Highlights |
+| **TikTok** | Videos, Audio tracks (with or without watermark) |
+| **Twitter / X** | Video tweets, GIFs |
+| **Reddit** | Hosted video posts with merged audio |
+| **Facebook** | Public & shared video posts, Reels |
+| **SoundCloud** | High-quality music tracks, Sets |
+| **Vimeo** | HD & 4K video streams |
+| **Bilibili / Dailymotion / Pinterest** | Full video downloads |
+| **+1800 more platforms** | [Full list of supported extractors](https://github.com/yt-dlp/yt-dlp/blob/master/supportedsites.md) |
+
+---
+
+## Features
+
+- 🌐 **1800+ Websites Supported**: Download videos, clips, reels, and audio from virtually any online video or streaming platform.
+- 🚀 **Automatic yt-dlp Version Check**: Checks for new yt-dlp updates on startup and offers one-click upgrades to keep site extractors compatible.
+- 🍪 **Authentication & Cookies (cookies.txt)**: Optional cookies support to download age-restricted, member-only, or private content across YouTube and other platforms.
+- 🌍 **Multi-Language Support**: 10 built-in languages (English, Türkçe, Español, Français, Deutsch, Português, العربية, 日本語, 한국어, 中文).
+- ⚙️ **Settings Drawer**: Easy management of cookies, appearance themes, and language preferences.
+- 📊 **Real-time Progress**: Live download percentage, speed tracking, and status indicators.
+- 🎨 **Modern Theming**: Native Dark mode, Light mode, and automatic OS system theme following.
+- 📁 **File Management**: Direct access to downloaded files in Finder / Windows Explorer / Linux file manager.
+- ✏️ **File Operations**: Rename downloaded files and manage history.
+- 🔄 **Queue Manager**: Up to 3 concurrent downloads with automatic queue handling.
+- 💾 **Persistent History**: Download history is preserved across application restarts.
+- 🛠️ **Dependency Auto-Detection**: Checks for `yt-dlp` and `ffmpeg` on first launch with one-click installation support.
+
+---
+
+## 🍪 Authentication & High-Quality Downloads (cookies.txt)
 
 ### Why is this needed? / Neden gerekli?
-> **English:** Due to YouTube's recent anti-bot protections (SABR streaming and Proof of Origin / PO Tokens), YouTube restricts unauthenticated requests to a maximum resolution of **360p** or throws `HTTP 403 Forbidden` errors. Providing a `cookies.txt` file from your web browser authenticates yt-dlp as a real user, unlocking **720p, 1080p, 1440p, 4K, and 8K** resolutions.
+> **English:** Most public videos across YouTube, Instagram, and Twitch do not require authentication. However, for **age-restricted (+18) videos, member-only streams, private accounts, or high-tier formats**, passing a `cookies.txt` file authenticates your session as a real logged-in user.
 >
-> **Türkçe:** YouTube'un yeni bot koruma mekanizmaları (SABR akışı ve PO Token zorunluluğu) nedeniyle oturum açılmamış isteklerde kalite maksimum **360p** ile sınırlandırılmakta veya `403 Forbidden` hatası alınmaktadır. Tarayıcınızdan alacağınız bir `cookies.txt` dosyası sayesinde uygulama tüm **720p, 1080p, 2K, 4K** formatlarını sorunsuz şekilde indirebilir.
+> **Türkçe:** Çoğu herkese açık video için çerez gerekmez. Ancak **yaş kısıtlamalı (+18) videolar, kanal üyelikleri, gizli hesaplar veya bazı özel yüksek çözünürlüklü akışlar** için tarayıcınızdan alacağınız bir `cookies.txt` dosyası oturumunuzu doğrulayarak tüm içeriklerin eksiksiz indirilmesini sağlar.
 
 ### How to get your `cookies.txt`? / `cookies.txt` Nasıl Alınır?
 
 1. **Install a Browser Extension / Tarayıcı Eklentisi Yükleyin:**
    - **Chrome / Edge / Brave / Opera:** [Get cookies.txt locally (Chrome Web Store)](https://chromewebstore.google.com/detail/get-cookiestxt-locally/cclelndahbckbenkjhflpdbgdldlbecc)
    - **Firefox:** [cookies.txt (Firefox Add-ons)](https://addons.mozilla.org/firefox/addon/cookies-txt/)
-2. **Log in to YouTube / YouTube'a Giriş Yapın:**
-   - Open your browser, navigate to [youtube.com](https://www.youtube.com) and ensure you are logged into your account.
-3. **Export the Cookies / Çerezleri Dışa Aktarın:**
-   - While on YouTube, click the extension icon and select **Export** / **Download**.
+2. **Log in to the Website / İlgili Siteye Giriş Yapın:**
+   - Open your browser and log in to your account (e.g. YouTube, Instagram, etc.).
+3. **Export Cookies / Çerezleri Dışa Aktarın:**
+   - Click the extension icon and select **Export** / **Download**.
    - Save the file as `cookies.txt` on your computer.
 4. **Select in YT Downloader / Uygulamada Tanıtın:**
    - Open YT Downloader and click **Settings (⚙️)** or use the banner inside the **Add Download** modal.
-   - Click **"Select cookies.txt"** and choose your saved file.
-   - *The file path is saved automatically, you only need to do this once!*
+   - Click **"Select cookies.txt"** and choose your file.
+   - *The file path is saved automatically; you only need to select it once!*
 
 ---
 
@@ -60,7 +83,7 @@ https://github.com/Tetracon05/YT-Downloader/releases
 
 The app requires two external tools. On first launch, it will check for these and offer to install them:
 
-- **yt-dlp** — The video downloader engine
+- **yt-dlp** — The video & audio downloader engine
 - **ffmpeg** — Required for merging video + audio streams and format conversion
 
 ### Development Tools
@@ -80,7 +103,7 @@ The app requires two external tools. On first launch, it will check for these an
 - [Build Tools for Visual Studio](https://visualstudio.microsoft.com/visual-cpp-build-tools/)
 
 #### Linux
-- `webkit2gtk-4.1` and related libs:
+- `webkit2gtk-4.1` and related libraries:
   ```bash
   # Debian/Ubuntu
   sudo apt install libwebkit2gtk-4.1-dev build-essential curl wget file libxdo-dev libssl-dev libayatana-appindicator3-dev librsvg2-dev
@@ -88,6 +111,8 @@ The app requires two external tools. On first launch, it will check for these an
   # Fedora
   sudo dnf install webkit2gtk4.1-devel openssl-devel curl wget file libappindicator-gtk3-devel librsvg2-devel
   ```
+
+---
 
 ## Build Steps
 
@@ -111,15 +136,17 @@ This starts both the Vite dev server (frontend HMR) and the Tauri Rust backend.
 npm run tauri build
 ```
 
-This produces platform-specific bundles:
+This produces platform-specific installer bundles:
 
 | Platform | Output |
-|----------|--------|
-| macOS | `src-tauri/target/release/bundle/dmg/YT Downloader.dmg` |
-| Windows | `src-tauri/target/release/bundle/msi/YT Downloader.msi` |
-| Linux | `src-tauri/target/release/bundle/appimage/YT Downloader.AppImage` |
+| :--- | :--- |
+| **macOS** | `src-tauri/target/release/bundle/dmg/YT Downloader.dmg` |
+| **Windows** | `src-tauri/target/release/bundle/msi/YT Downloader.msi` |
+| **Linux** | `src-tauri/target/release/bundle/appimage/YT Downloader.AppImage` |
 
-## Installing yt-dlp and ffmpeg
+---
+
+## Installing yt-dlp and ffmpeg Manually
 
 ### macOS (Homebrew)
 ```bash
@@ -143,21 +170,25 @@ sudo dnf install ffmpeg      # Fedora
 sudo pacman -S ffmpeg        # Arch
 ```
 
+---
+
 ## Architecture
 
 ```
 ├── src/                    # React Frontend (TypeScript)
-│   ├── components/         # UI Components
+│   ├── components/         # UI Components (Download List, Modals, Settings, Dialogs)
 │   ├── store/              # Zustand state management
-│   ├── hooks/              # Custom React hooks
-│   ├── lib/                # API wrappers & utilities
+│   ├── hooks/              # Custom React hooks (Language, Theme, ContextMenu)
+│   ├── lib/                # API wrappers (Tauri IPC), i18n, utils
 │   └── types/              # TypeScript type definitions
-├── src-tauri/              # Rust Backend
+├── src-tauri/              # Rust Backend (Tauri v2)
 │   └── src/
-│       ├── commands/       # Tauri command handlers
+│       ├── commands/       # Tauri command handlers (Download, Analyze, Dependencies, File Ops)
 │       ├── state.rs        # App state types
-│       └── store.rs        # JSON persistence
+│       └── store.rs        # JSON persistence & configuration
 ```
+
+---
 
 ## License
 
