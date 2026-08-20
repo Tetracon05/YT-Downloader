@@ -301,7 +301,17 @@ pub async fn update_yt_dlp() -> Result<String, String> {
     {
         use std::os::windows::process::CommandExt;
 
-        // Try winget first
+        // Try yt-dlp's built-in self-updater first
+        let mut self_update_cmd = Command::new("yt-dlp");
+        self_update_cmd.args(["-U"]);
+        self_update_cmd.creation_flags(0x08000000);
+        if let Ok(output) = self_update_cmd.output() {
+            if output.status.success() {
+                return Ok("yt-dlp updated successfully via yt-dlp -U".to_string());
+            }
+        }
+
+        // Try winget
         let mut cmd = Command::new("winget");
         cmd.args(["upgrade", "yt-dlp.yt-dlp", "--accept-package-agreements", "--accept-source-agreements"]);
         cmd.creation_flags(0x08000000);
@@ -315,18 +325,15 @@ pub async fn update_yt_dlp() -> Result<String, String> {
         let mut pip_cmd = Command::new("pip");
         pip_cmd.args(["install", "-U", "yt-dlp"]);
         pip_cmd.creation_flags(0x08000000);
-        let output = pip_cmd
-            .output()
-            .map_err(|e| format!("pip install failed: {}", e))?;
+        let output = pip_cmd.output();
 
-        if output.status.success() {
-            return Ok("yt-dlp updated successfully via pip".to_string());
+        if let Ok(output) = output {
+            if output.status.success() {
+                return Ok("yt-dlp updated successfully via pip".to_string());
+            }
         }
 
-        Err(format!(
-            "Update failed: {}",
-            String::from_utf8_lossy(&output.stderr)
-        ))
+        Err("Failed to update yt-dlp via self-update (-U), winget, or pip.".to_string())
     }
 
     #[cfg(target_os = "linux")]
