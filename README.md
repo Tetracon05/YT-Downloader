@@ -10,6 +10,9 @@
 
 A modern, cross-platform desktop application for downloading videos and audio using [yt-dlp](https://github.com/yt-dlp/yt-dlp). Built with [Tauri v2](https://tauri.app/) (Rust backend) and React + TypeScript + Tailwind CSS (frontend).
 
+# Download / İndir
+https://github.com/Tetracon05/YT-Downloader/releases
+
 ## Features
 
 - 🎬 Download video and audio from YouTube and 1000+ supported sites
