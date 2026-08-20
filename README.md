@@ -10,7 +10,6 @@ A modern, cross-platform desktop application for downloading videos and audio us
 - ⚙️ **Settings Drawer**: Easy management of cookies, appearance themes, and language
 - 📊 Real-time progress tracking with speed display
 - 🎨 Theme options: System (automatic OS follow), Light, and Dark modes
-- ⏸ Pause and resume downloads
 - 📁 Show downloaded files in system file manager
 - ✏️ Rename downloaded files
 - 🔄 Up to 3 concurrent downloads with automatic queuing
