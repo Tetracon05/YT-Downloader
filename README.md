@@ -11,12 +11,12 @@ A modern, fast, and cross-platform desktop application for downloading videos an
 
 Powered by [yt-dlp](https://github.com/yt-dlp/yt-dlp) and built with [Tauri v2](https://tauri.app/) (Rust backend) and React + TypeScript + Tailwind CSS (frontend).
 
-# Download / İndir
+# Download
 👉 **[Get Latest Release (macOS, Windows, Linux)](https://github.com/Tetracon05/YT-Downloader/releases)**
 
 ---
 
-## 🌐 Supported Sites / Desteklenen Siteler
+## 🌐 Supported Sites
 
 Although named **YT Downloader**, the application leverages yt-dlp's universal extractor engine and supports **over 1,800 websites and platforms**, including:
 
@@ -55,22 +55,20 @@ Although named **YT Downloader**, the application leverages yt-dlp's universal e
 
 ## 🍪 Authentication & High-Quality Downloads (cookies.txt)
 
-### Why is this needed? / Neden gerekli?
-> **English:** Most public videos across YouTube, Instagram, and Twitch do not require authentication. However, for **age-restricted (+18) videos, member-only streams, private accounts, or high-tier formats**, passing a `cookies.txt` file authenticates your session as a real logged-in user.
->
-> **Türkçe:** Çoğu herkese açık video için çerez gerekmez. Ancak **yaş kısıtlamalı (+18) videolar, kanal üyelikleri, gizli hesaplar veya bazı özel yüksek çözünürlüklü akışlar** için tarayıcınızdan alacağınız bir `cookies.txt` dosyası oturumunuzu doğrulayarak tüm içeriklerin eksiksiz indirilmesini sağlar.
+### Why is this needed?
+> Most public videos across YouTube, Instagram, and Twitch do not require authentication. However, for **age-restricted (+18) videos, member-only streams, private accounts, or high-tier formats**, passing a `cookies.txt` file authenticates your session as a real logged-in user.
 
-### How to get your `cookies.txt`? / `cookies.txt` Nasıl Alınır?
+### How to get your `cookies.txt`?
 
-1. **Install a Browser Extension / Tarayıcı Eklentisi Yükleyin:**
+1. **Install a Browser Extension:**
    - **Chrome / Edge / Brave / Opera:** [Get cookies.txt locally (Chrome Web Store)](https://chromewebstore.google.com/detail/get-cookiestxt-locally/cclelndahbckbenkjhflpdbgdldlbecc)
    - **Firefox:** [cookies.txt (Firefox Add-ons)](https://addons.mozilla.org/firefox/addon/cookies-txt/)
-2. **Log in to the Website / İlgili Siteye Giriş Yapın:**
+2. **Log in to the Website:**
    - Open your browser and log in to your account (e.g. YouTube, Instagram, etc.).
-3. **Export Cookies / Çerezleri Dışa Aktarın:**
+3. **Export Cookies:**
    - Click the extension icon and select **Export** / **Download**.
    - Save the file as `cookies.txt` on your computer.
-4. **Select in YT Downloader / Uygulamada Tanıtın:**
+4. **Select in YT Downloader:**
    - Open YT Downloader and click **Settings (⚙️)** or use the banner inside the **Add Download** modal.
    - Click **"Select cookies.txt"** and choose your file.
    - *The file path is saved automatically; you only need to select it once!*
